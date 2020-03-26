@@ -10,7 +10,12 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js"],
+    alias: {
+      Components: path.resolve(__dirname, "src/components/"),
+      Pages: path.resolve(__dirname, "src/pages"),
+      Styleguide: path.resolve(__dirname, "src/styleguide")
+    }
   },
 
   module: {
@@ -31,8 +36,35 @@ module.exports = {
         loader: "source-map-loader"
       },
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                mode: "local",
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+                context: "."
+              },
+              sourceMap: true,
+              importLoaders: 1
+            }
+          },
+          "sass-loader"
+        ]
+      },
+      {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        use: [
+          "file-loader",
+          {
+            loader: "img-loader",
+            options: {
+              bypassOnDebug: true
+            }
+          }
+        ]
       }
     ]
   },

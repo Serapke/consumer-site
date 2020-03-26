@@ -1,14 +1,16 @@
 import * as React from "react";
-import "./App.css";
+import { hot } from "react-hot-loader";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="App">
-        <h1> Hello, World! </h1>
-      </div>
-    );
-  }
-}
+import Frontdoor from "./pages/frontdoor";
 
-export default App;
+import "Styleguide/global.scss";
+
+const App = () => {
+  return (
+    <div>
+      <Frontdoor />
+    </div>
+  );
+};
+
+export default hot(module)(App);
