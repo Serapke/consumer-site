@@ -9,7 +9,8 @@
     "baseUrl": ".",
     "paths": {
       "Components/*": ["./src/components/*"],
-      "Pages/*": ["./src/pages/*"]
+      "Pages/*": ["./src/pages/*"],
+      "Store/*": ["./src/store/*"]
     }
   }
 }

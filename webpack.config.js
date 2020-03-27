@@ -13,6 +13,7 @@ module.exports = {
     alias: {
       Components: path.resolve(__dirname, "src/components/"),
       Pages: path.resolve(__dirname, "src/pages"),
+      Store: path.resolve(__dirname, "src/store"),
       Styleguide: path.resolve(__dirname, "src/styleguide")
     }
   },
