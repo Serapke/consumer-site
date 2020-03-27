@@ -1,0 +1,18 @@
+@import "~Styleguide/colors";
+
+.button {
+  width: 100%;
+  border-radius: 3px;
+  padding: 20px 0;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.primary {
+  background: $primary;
+  color: $text-light;
+
+  &:hover {
+    background: $primary-light;
+  }
+}
