@@ -13,6 +13,7 @@ module.exports = {
     alias: {
       Components: path.resolve(__dirname, "src/components/"),
       Pages: path.resolve(__dirname, "src/pages"),
+      Services: path.resolve(__dirname, "src/services"),
       Store: path.resolve(__dirname, "src/store"),
       Styleguide: path.resolve(__dirname, "src/styleguide")
     }
@@ -36,7 +37,7 @@ module.exports = {
         loader: "source-map-loader"
       },
       {
-        test: /\.scss$/,
+        test: /\.(s?)css$/,
         use: [
           "style-loader",
           {
@@ -65,7 +66,8 @@ module.exports = {
             }
           }
         ]
-      }
+      },
+      { test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" }
     ]
   },
   output: {

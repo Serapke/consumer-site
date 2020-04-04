@@ -10,6 +10,7 @@
     "paths": {
       "Components/*": ["./src/components/*"],
       "Pages/*": ["./src/pages/*"],
+      "Services/*": ["./src/services/*"],
       "Store/*": ["./src/store/*"]
     }
   }
