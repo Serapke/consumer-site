@@ -15,7 +15,6 @@ export interface Task {
   id: number;
   exercise: Exercise;
   sets: number[];
-  order: number;
 }
 
 export interface Exercise {

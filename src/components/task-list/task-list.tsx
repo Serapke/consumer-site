@@ -2,14 +2,16 @@ import * as React from "react";
 import { Task } from "Store/types";
 import TaskItem from "Components/task-item";
 import { ModalType } from "Components/modal/modal";
-import { showModalRequest, hideModalRequest } from "Store/modal/thunks";
+import { showModalRequest } from "Store/modal/thunks";
 import { ActionType } from "Store/modal/types";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import { reorder } from "Store/helper";
+import { updateTasksRequest } from "Store/active-item/thunks";
 
 interface OwnProps {
   tasks: Task[];
-  modalResult: number;
   showModal: typeof showModalRequest;
-  hideModal: typeof hideModalRequest;
+  updateTasks: typeof updateTasksRequest;
 }
 
 interface ActiveSet {
@@ -23,14 +25,14 @@ interface ActiveTask {
   set?: ActiveSet;
 }
 
-const TaskList = ({ tasks, modalResult, showModal, hideModal }: OwnProps) => {
+const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
   const [activeTask, setActiveTask] = React.useState<ActiveTask>({ id: null });
 
   const onTaskClick = (taskID: number) => (_e: React.ChangeEvent<{}>, isExpanded: boolean) => {
     setActiveTask(isExpanded ? { id: taskID } : { id: null });
   };
 
-  const onSetClick = (value: number, index: number) => {
+  const onSetClick = (index: number) => {
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
@@ -54,18 +56,43 @@ const TaskList = ({ tasks, modalResult, showModal, hideModal }: OwnProps) => {
     setActiveTask(prevState => ({ id: prevState.id }));
   };
 
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (destination.index === source.index) {
+      return;
+    }
+
+    const reorderedTasks = reorder(tasks, source.index, destination.index);
+    updateTasks(reorderedTasks);
+  };
+
   return (
     <div>
-      {tasks.map(task => (
-        <TaskItem
-          task={task}
-          key={task.id}
-          expanded={activeTask.id === task.id}
-          onChange={onTaskClick(task.id)}
-          onSetClick={onSetClick}
-          onAddSetClick={onAddSetClick}
-        />
-      ))}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="list">
+          {provided => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              {tasks.map((task, index) => (
+                <TaskItem
+                  index={index}
+                  task={task}
+                  key={task.id}
+                  expanded={activeTask.id === task.id}
+                  onChange={onTaskClick(task.id)}
+                  onSetClick={onSetClick}
+                  onAddSetClick={onAddSetClick}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

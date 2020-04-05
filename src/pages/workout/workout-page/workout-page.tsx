@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { ApplicationState } from "Store/index";
 import { RouteComponentProps } from "react-router-dom";
 import { Workout } from "Store/types";
-import { fetchWorkoutRequest, updateTaskRequest } from "Store/active-item/thunks";
-import { showModalRequest, hideModalRequest } from "Store/modal/thunks";
+import { fetchWorkoutRequest, updateTasksRequest } from "Store/active-item/thunks";
+import { showModalRequest } from "Store/modal/thunks";
 import TaskList from "Components/task-list";
 import Button from "Components/button";
 
@@ -16,25 +16,17 @@ interface RouteParams {
 
 interface PropsFromState {
   workout: Workout;
-  modalResult: number;
 }
 
 interface PropsFromDispatch {
   fetchWorkout: typeof fetchWorkoutRequest;
+  updateTasks: typeof updateTasksRequest;
   showModal: typeof showModalRequest;
-  hideModal: typeof hideModalRequest;
 }
 
 type AllProps = PropsFromState & PropsFromDispatch & RouteComponentProps<RouteParams>;
 
-const WorkoutPage: React.FunctionComponent<AllProps> = ({
-  workout,
-  modalResult,
-  match,
-  fetchWorkout,
-  showModal,
-  hideModal
-}) => {
+const WorkoutPage: React.FunctionComponent<AllProps> = ({ workout, match, fetchWorkout, showModal, updateTasks }) => {
   React.useEffect(() => {
     fetchWorkout(match.params.id);
   }, [match.params.id]);
@@ -49,20 +41,19 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({
           + Add
         </Button>
       </div>
-      <TaskList tasks={workout.tasks} modalResult={modalResult} showModal={showModal} hideModal={hideModal} />
+      <TaskList tasks={workout.tasks} showModal={showModal} updateTasks={updateTasks} />
     </div>
   );
 };
 
-const mapStateToProps = ({ activeItem, modal }: ApplicationState, _props: AllProps) => ({
-  workout: activeItem.workout,
-  modalResult: modal.result
+const mapStateToProps = ({ activeItem }: ApplicationState, _props: AllProps) => ({
+  workout: activeItem.workout
 });
 
 const mapDispatchToProps = {
   fetchWorkout: fetchWorkoutRequest,
-  showModal: showModalRequest,
-  hideModal: hideModalRequest
+  updateTasks: updateTasksRequest,
+  showModal: showModalRequest
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkoutPage);
