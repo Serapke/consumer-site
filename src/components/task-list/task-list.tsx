@@ -14,22 +14,11 @@ interface OwnProps {
   updateTasks: typeof updateTasksRequest;
 }
 
-interface ActiveSet {
-  action: "add" | "update" | "delete";
-  index: number;
-  value: number;
-}
-
-interface ActiveTask {
-  id: number;
-  set?: ActiveSet;
-}
-
 const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
-  const [activeTask, setActiveTask] = React.useState<ActiveTask>({ id: null });
+  const [activeTask, setActiveTask] = React.useState<number | false>(false);
 
   const onTaskClick = (taskID: number) => (_e: React.ChangeEvent<{}>, isExpanded: boolean) => {
-    setActiveTask(isExpanded ? { id: taskID } : { id: null });
+    setActiveTask(isExpanded ? taskID : false);
   };
 
   const onSetClick = (index: number) => {
@@ -37,7 +26,7 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
       type: ModalType.SetEditingDialog,
       props: {
         title: "Change repetitions",
-        task: tasks.find(t => t.id === activeTask.id),
+        task: tasks.find(t => t.id === activeTask),
         action: ActionType.UPDATE,
         index
       }
@@ -49,11 +38,10 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
       type: ModalType.SetEditingDialog,
       props: {
         title: "Add new set",
-        task: tasks.find(t => t.id === activeTask.id),
+        task: tasks.find(t => t.id === activeTask),
         action: ActionType.ADD
       }
     });
-    setActiveTask(prevState => ({ id: prevState.id }));
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -82,7 +70,7 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
                   index={index}
                   task={task}
                   key={task.id}
-                  expanded={activeTask.id === task.id}
+                  expanded={activeTask === task.id}
                   onChange={onTaskClick(task.id)}
                   onSetClick={onSetClick}
                   onAddSetClick={onAddSetClick}
