@@ -1,21 +1,21 @@
 import { Action } from "redux";
-import { Task } from "Store/types";
-
-export interface CommonDialogProps {
-  title: string;
-}
+import { Task, Workout } from "Store/types";
 
 export enum ActionType {
   ADD = "add",
   UPDATE = "update"
 }
-export interface SetEditingDialogProps extends CommonDialogProps {
+export interface SetEditingDialogProps {
   action: ActionType;
   task: Task;
   index?: number;
 }
 
-export type DialogStateProps = SetEditingDialogProps;
+export interface WorkoutTitleEditingDialogProps {
+  workout: Workout;
+}
+
+export type DialogStateProps = SetEditingDialogProps | WorkoutTitleEditingDialogProps;
 
 export interface ModalState {
   type: string;

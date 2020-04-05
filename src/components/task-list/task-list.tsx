@@ -25,7 +25,6 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
-        title: "Change repetitions",
         task: tasks.find(t => t.id === activeTask),
         action: ActionType.UPDATE,
         index
@@ -37,7 +36,6 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
-        title: "Add new set",
         task: tasks.find(t => t.id === activeTask),
         action: ActionType.ADD
       }

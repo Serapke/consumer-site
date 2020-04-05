@@ -1,22 +1,20 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { ModalComponent, AllSetEditingDialogProps } from "Components/modal/types";
+import { CommonDialogActions } from "Components/modal/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { updateTaskRequest } from "Store/active-item/thunks";
 import { updateObjectInArray, removeItem } from "Store/helper";
-import { ActionType } from "Store/modal/types";
+import { ActionType, SetEditingDialogProps } from "Store/modal/types";
 
 import * as Styles from "./set-editing-dialog.scss";
 
-const SetEditingDialog: ModalComponent = ({
-  hide,
-  title,
-  task,
-  index,
-  action,
-  updateTask
-}: AllSetEditingDialogProps) => {
+type OwnProps = CommonDialogActions &
+  SetEditingDialogProps & {
+    updateTask: typeof updateTaskRequest;
+  };
+
+const SetEditingDialog = ({ hide, task, index, action, updateTask }: OwnProps) => {
   const [repetitions, setRepetitions] = React.useState<number>();
 
   const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +46,12 @@ const SetEditingDialog: ModalComponent = ({
 
   const showDeleteButton = action === ActionType.UPDATE;
 
+  const getTitle = () => (action === ActionType.UPDATE ? "Change repetitions" : "Add new set");
+
   return (
     <Dialog open={true} fullWidth={true}>
       <DialogTitle disableTypography className={Styles.title}>
-        <h2>{title}</h2>
+        <h2>{getTitle()}</h2>
         {showDeleteButton && (
           <IconButton onClick={handleDelete}>
             <Delete />

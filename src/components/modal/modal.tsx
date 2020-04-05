@@ -1,10 +1,11 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import SetEditingDialog from "Components/dialogs/set-editing-dialog";
-import { ModalComponent, CommonDialogActions } from "./types";
+import { CommonDialogActions } from "./types";
 import { ApplicationState } from "Store/index";
 import { hideModal } from "Store/modal/actions";
 import { ModalState, DialogStateProps } from "Store/modal/types";
+import workoutTitleEditingDialog from "Components/dialogs/workout-title-editing-dialog";
 
 type OwnProps = CommonDialogActions & {
   type: string;
@@ -12,14 +13,16 @@ type OwnProps = CommonDialogActions & {
 };
 
 export const ModalType = {
-  SetEditingDialog: "SET_EDITING_DIALOG"
+  SetEditingDialog: "SET_EDITING_DIALOG",
+  WorkoutTitleEditingDialog: "WORKOUT_TITLE_EDITING_DIALOG"
 };
 
-const MODAL_COMPONENTS: { [key: string]: ModalComponent } = {
-  [ModalType.SetEditingDialog]: SetEditingDialog
+const MODAL_COMPONENTS: { [key: string]: React.FC<any> } = {
+  [ModalType.SetEditingDialog]: SetEditingDialog,
+  [ModalType.WorkoutTitleEditingDialog]: workoutTitleEditingDialog
 };
 
-const Modal = ({ type, props, hide }: OwnProps): React.FunctionComponentElement<ModalComponent> => {
+const Modal = ({ type, props, hide }: OwnProps) => {
   if (!type) {
     return null;
   }

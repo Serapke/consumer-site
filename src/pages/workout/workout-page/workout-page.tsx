@@ -9,6 +9,7 @@ import TaskList from "Components/task-list";
 import Button from "Components/button";
 
 import * as Styles from "./workout-page.scss";
+import { ModalType } from "Components/modal/modal";
 
 interface RouteParams {
   id: string;
@@ -33,9 +34,20 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ workout, match, fetchW
 
   if (!workout) return <div>Loading...</div>;
 
+  const onTitleClick = () => {
+    showModal({
+      type: ModalType.WorkoutTitleEditingDialog,
+      props: {
+        workout
+      }
+    });
+  };
+
   return (
     <div>
-      <h2 className={Styles.title}>{workout.title}</h2>
+      <div onClick={onTitleClick}>
+        <h2 className={Styles.title}>{workout.title}</h2>
+      </div>
       <div className={Styles.addTaskButton}>
         <Button type="button" style="secondary">
           + Add

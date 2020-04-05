@@ -3,7 +3,7 @@ import { updateActiveWorkout, updateTask } from "./actions";
 import { ThunkAction } from "redux-thunk";
 import { ApplicationState } from "..";
 import { ActiveItemActions } from "./types";
-import { Task } from "Store/types";
+import { Task, Workout } from "Store/types";
 import { updateIdentifiableObjectInArray } from "Store/helper";
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, ApplicationState, unknown, ActiveItemActions>;
@@ -11,6 +11,11 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, ApplicationSta
 export const fetchWorkoutRequest = (id: string): AppThunk => async dispatch => {
   const workout = await getWorkout(id);
   dispatch(updateActiveWorkout(workout));
+};
+
+export const updateWorkoutRequest = (workout: Workout): AppThunk => async dispatch => {
+  const updatedWorkout = await updateWorkout(workout);
+  dispatch(updateActiveWorkout(updatedWorkout));
 };
 
 export const updateTasksRequest = (tasks: Task[]): AppThunk => async (dispatch, getState) => {
