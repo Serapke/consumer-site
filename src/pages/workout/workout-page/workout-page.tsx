@@ -6,6 +6,9 @@ import { Workout } from "Store/types";
 import { fetchWorkoutRequest, updateTaskRequest } from "Store/active-item/thunks";
 import { showModalRequest, hideModalRequest } from "Store/modal/thunks";
 import TaskList from "Components/task-list";
+import Button from "Components/button";
+
+import * as Styles from "./workout-page.scss";
 
 interface RouteParams {
   id: string;
@@ -40,7 +43,12 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({
 
   return (
     <div>
-      <h2>{workout.title}</h2>
+      <h2 className={Styles.title}>{workout.title}</h2>
+      <div className={Styles.addTaskButton}>
+        <Button type="button" style="secondary">
+          + Add
+        </Button>
+      </div>
       <TaskList tasks={workout.tasks} modalResult={modalResult} showModal={showModal} hideModal={hideModal} />
     </div>
   );

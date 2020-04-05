@@ -16,3 +16,12 @@
     background: $primary-light;
   }
 }
+
+.secondary {
+  background: $secondary;
+  color: $text-light;
+
+  &:hover {
+    background: $secondary-light;
+  }
+}
