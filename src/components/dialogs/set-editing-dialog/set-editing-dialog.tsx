@@ -5,6 +5,9 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, I
 import { Delete } from "@material-ui/icons";
 import { updateTaskRequest } from "Store/active-item/thunks";
 import { updateObjectInArray, removeItem } from "Store/helper";
+import { ActionType } from "Store/modal/types";
+
+import * as Styles from "./set-editing-dialog.scss";
 
 const SetEditingDialog: ModalComponent = ({
   hide,
@@ -21,12 +24,12 @@ const SetEditingDialog: ModalComponent = ({
   };
 
   const handleConfirm = () => {
-    if (action === "update") {
+    if (action === ActionType.UPDATE) {
       updateTask({
         ...task,
         sets: updateObjectInArray(task.sets, { index, item: repetitions })
       });
-    } else if (action === "add") {
+    } else if (action === ActionType.ADD) {
       updateTask({
         ...task,
         sets: [...task.sets, repetitions]
@@ -43,14 +46,19 @@ const SetEditingDialog: ModalComponent = ({
     hide();
   };
 
+  const showDeleteButton = action === ActionType.UPDATE;
+
   return (
-    <Dialog open={true}>
-      <DialogTitle>
-        {title}
-        <IconButton onClick={handleDelete}>
-          <Delete />
-        </IconButton>
+    <Dialog open={true} fullWidth={true}>
+      <DialogTitle disableTypography className={Styles.title}>
+        <h2>{title}</h2>
+        {showDeleteButton && (
+          <IconButton onClick={handleDelete}>
+            <Delete />
+          </IconButton>
+        )}
       </DialogTitle>
+
       <DialogContent>
         <TextField
           autoFocus

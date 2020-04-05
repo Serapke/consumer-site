@@ -4,8 +4,13 @@ import { Task } from "Store/types";
 export interface CommonDialogProps {
   title: string;
 }
+
+export enum ActionType {
+  ADD = "add",
+  UPDATE = "update"
+}
 export interface SetEditingDialogProps extends CommonDialogProps {
-  action: "add" | "update";
+  action: ActionType;
   task: Task;
   index?: number;
 }

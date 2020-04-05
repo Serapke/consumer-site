@@ -3,6 +3,7 @@ import { Task } from "Store/types";
 import TaskItem from "Components/task-item";
 import { ModalType } from "Components/modal/modal";
 import { showModalRequest, hideModalRequest } from "Store/modal/thunks";
+import { ActionType } from "Store/modal/types";
 
 interface OwnProps {
   tasks: Task[];
@@ -33,9 +34,9 @@ const TaskList = ({ tasks, modalResult, showModal, hideModal }: OwnProps) => {
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
-        title: "Change set repetitions",
+        title: "Change repetitions",
         task: tasks.find(t => t.id === activeTask.id),
-        action: "update",
+        action: ActionType.UPDATE,
         index
       }
     });
@@ -47,7 +48,7 @@ const TaskList = ({ tasks, modalResult, showModal, hideModal }: OwnProps) => {
       props: {
         title: "Add new set",
         task: tasks.find(t => t.id === activeTask.id),
-        action: "add"
+        action: ActionType.ADD
       }
     });
     setActiveTask(prevState => ({ id: prevState.id }));
