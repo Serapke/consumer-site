@@ -1,30 +1,42 @@
 import * as React from "react";
 
-import * as Styles from "./navigation-bar.scss";
+import { AppBar, Toolbar, IconButton, makeStyles, Typography, Button } from "@material-ui/core";
+import { Menu } from "@material-ui/icons";
+import Drawer from "./drawer";
 
-class NavigationBar extends React.Component {
-  render() {
-    return (
-      <div className={Styles.container}>
-        <div className={Styles.title}>Sportuok</div>
-        <button type="button" className={Styles.mobileNavButton}>
-          <span className={Styles.screenReaderText}>Open Navigation</span>
-          <svg
-            className={Styles.iconBurger}
-            width="28px"
-            height="28px"
-            viewBox="0 0 24 24"
-          >
-            <rect y="2" width="24" height="2" rx="1"></rect>
-            <rect y="20" width="24" height="2" rx="1"></rect>
-            <rect y="8" width="24" height="2" rx="1"></rect>
-            <rect y="14" width="24" height="2" rx="1"></rect>
-          </svg>
-        </button>
-        <div className={Styles.signIn}>Sign in</div>
-      </div>
-    );
-  }
-}
+const useStyles = makeStyles((theme) => ({
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
+
+const NavigationBar = () => {
+  const classes = useStyles();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="menu"
+          onClick={() => setDrawerOpen(true)}
+        >
+          <Menu />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          Sportuok
+        </Typography>
+        <Button color="inherit">Login</Button>
+      </Toolbar>
+      <Drawer open={drawerOpen} onOpen={() => setDrawerOpen(true)} onClose={() => setDrawerOpen(false)} />
+    </AppBar>
+  );
+};
 
 export default NavigationBar;
