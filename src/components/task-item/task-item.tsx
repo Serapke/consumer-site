@@ -5,13 +5,14 @@ import {
   Typography,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import { Task } from "Store/types";
 import * as Styles from "./task-item.scss";
 import CircleItem from "Components/circle-item";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable } from "react-beautiful-dnd";
+import { capitalizeWord } from "../../utils/text-utils";
 
 interface OwnProps {
   index: number;
@@ -22,18 +23,16 @@ interface OwnProps {
   onAddSetClick: () => void;
 }
 
-const capitalizeWord = (word: string) => word[0].toUpperCase() + word.slice(1).toLowerCase();
-
 const useSummaryStyles = makeStyles({
   content: {
-    flexDirection: "column"
-  }
+    flexDirection: "column",
+  },
 });
 
 const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetClick, onAddSetClick }) => {
   return (
     <Draggable draggableId={task.id.toString()} index={index}>
-      {provided => (
+      {(provided) => (
         <ExpansionPanel
           expanded={expanded}
           onChange={onChange}
@@ -44,7 +43,7 @@ const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetCl
           <ExpansionPanelSummary classes={useSummaryStyles()}>
             <Typography component="div">{task.exercise.title}</Typography>
             <div className={Styles.chipContainer}>
-              {task.exercise.bodyParts.map(bodyPart => (
+              {task.exercise.bodyParts.map((bodyPart) => (
                 <Chip key={bodyPart} size="small" label={capitalizeWord(bodyPart)} />
               ))}
             </div>
