@@ -17,6 +17,9 @@ const useStyles = makeStyles({
   list: {
     width: 250,
   },
+  listItemText: {
+    color: "black",
+  },
 });
 
 const Drawer = ({ open, onOpen, onClose }: OwnProps) => {
@@ -29,13 +32,13 @@ const Drawer = ({ open, onOpen, onClose }: OwnProps) => {
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText primary="Home" />
+            <ListItemText className={classes.listItemText} primary="Home" />
           </ListItem>
           <ListItem key="Favorites" component={AdapterLink} to="/favorites">
             <ListItemIcon>
               <Favorite />
             </ListItemIcon>
-            <ListItemText primary="Favorites" />
+            <ListItemText className={classes.listItemText} primary="Favorites" />
           </ListItem>
         </List>
       </div>
