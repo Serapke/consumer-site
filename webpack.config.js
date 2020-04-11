@@ -15,8 +15,8 @@ module.exports = {
       Pages: path.resolve(__dirname, "src/pages"),
       Services: path.resolve(__dirname, "src/services"),
       Store: path.resolve(__dirname, "src/store"),
-      Styleguide: path.resolve(__dirname, "src/styleguide")
-    }
+      Styleguide: path.resolve(__dirname, "src/styleguide"),
+    },
   },
 
   module: {
@@ -26,15 +26,15 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: "ts-loader"
-          }
-        ]
+            loader: "ts-loader",
+          },
+        ],
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
         enforce: "pre",
         test: /\.js$/,
-        loader: "source-map-loader"
+        loader: "source-map-loader",
       },
       {
         test: /\.(s?)css$/,
@@ -46,14 +46,14 @@ module.exports = {
               modules: {
                 mode: "local",
                 localIdentName: "[name]__[local]___[hash:base64:5]",
-                context: "."
+                context: ".",
               },
               sourceMap: true,
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
-          "sass-loader"
-        ]
+          "sass-loader",
+        ],
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
@@ -62,24 +62,25 @@ module.exports = {
           {
             loader: "img-loader",
             options: {
-              bypassOnDebug: true
-            }
-          }
-        ]
+              bypassOnDebug: true,
+            },
+          },
+        ],
       },
-      { test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" }
-    ]
+      { test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
+    ],
   },
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "/dist/",
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   devServer: {
     contentBase: path.join(__dirname, "public/"),
     port: 3000,
     publicPath: "http://localhost:3000/dist/",
     hot: true,
-    historyApiFallback: true
-  }
+    host: "0.0.0.0",
+    historyApiFallback: true,
+  },
 };
