@@ -20,27 +20,27 @@ interface OwnProps {}
 
 type AllProps = PropsFromState & PropsFromDispatch & OwnProps;
 
-const FavoritesPage: React.FunctionComponent<AllProps> = props => {
+const FavoritesPage: React.FunctionComponent<AllProps> = (props) => {
   React.useEffect(() => {
     props.fetchRoutines();
     props.fetchWorkouts();
   }, []);
   return (
     <div>
-      <RoutineSlider title="Plans" items={props.routines} type={ItemType.ROUTINE} />
-      <RoutineSlider title="Workouts" items={props.workouts} type={ItemType.WORKOUT} />
+      <RoutineSlider title="Plans" addHref="/plan/create" items={props.routines} type={ItemType.ROUTINE} />
+      <RoutineSlider title="Workouts" addHref="/workout/create" items={props.workouts} type={ItemType.WORKOUT} />
     </div>
   );
 };
 
 const mapStateToProps = ({ content }: ApplicationState) => ({
   routines: content.routines,
-  workouts: content.workouts
+  workouts: content.workouts,
 });
 
 const mapDispatchToProps = {
   fetchRoutines: fetchRoutinesRequest,
-  fetchWorkouts: fetchWorkoutsRequest
+  fetchWorkouts: fetchWorkoutsRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FavoritesPage);

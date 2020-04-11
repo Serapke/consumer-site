@@ -4,21 +4,24 @@ import RoutineSliderItem from "./slider-items/routine";
 import WorkoutSliderItem from "./slider-items/workout";
 
 import * as Styles from "./slider-section.scss";
+import { Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 export enum ItemType {
   ROUTINE = "routine",
-  WORKOUT = "workout"
+  WORKOUT = "workout",
 }
 
 interface SliderProps {
   title: string;
+  addHref: string;
   items: Array<any>;
   type: ItemType;
 }
 
 const itemTypeToSliderItem = {
   routine: RoutineSliderItem,
-  workout: WorkoutSliderItem
+  workout: WorkoutSliderItem,
 };
 
 const settings = {
@@ -32,29 +35,29 @@ const settings = {
         slidesToShow: 3,
         slidesToScroll: 3,
         infinite: true,
-        dots: true
-      }
+        dots: true,
+      },
     },
     {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
-        initialSlide: 2
-      }
+        initialSlide: 2,
+      },
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 1,
-        infinite: false
-      }
-    }
-  ]
+        infinite: false,
+      },
+    },
+  ],
 };
 
-const SliderSection: React.FunctionComponent<SliderProps> = ({ title, items, type }) => {
+const SliderSection: React.FunctionComponent<SliderProps> = ({ title, addHref, items, type }) => {
   const SliderItem = itemTypeToSliderItem[type];
 
   const renderItems = () => {
@@ -63,7 +66,7 @@ const SliderSection: React.FunctionComponent<SliderProps> = ({ title, items, typ
     }
     return (
       <Slider {...settings}>
-        {items.map(item => (
+        {items.map((item) => (
           <SliderItem item={item} key={item.id} />
         ))}
       </Slider>
@@ -72,7 +75,12 @@ const SliderSection: React.FunctionComponent<SliderProps> = ({ title, items, typ
 
   return (
     <div className={Styles.container}>
-      <h2>{title}</h2>
+      <div className={Styles.header}>
+        <h2>{title}</h2>
+        <Button color="secondary" component={Link} to={addHref}>
+          + Add
+        </Button>
+      </div>
       {renderItems()}
     </div>
   );
