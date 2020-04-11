@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { showModalRequest } from "Store/modal/thunks";
 import { TextField, Fab, makeStyles, createStyles, Theme, Button, IconButton } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import LinkButton from "Components/link-button";
 import { Link } from "react-router-dom";
 import TaskList from "Components/task-list";
 

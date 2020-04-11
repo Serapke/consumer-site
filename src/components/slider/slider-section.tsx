@@ -15,6 +15,7 @@ export enum ItemType {
 interface SliderProps {
   title: string;
   addHref: string;
+  addTitle: string;
   items: Array<any>;
   type: ItemType;
 }
@@ -57,7 +58,7 @@ const settings = {
   ],
 };
 
-const SliderSection: React.FunctionComponent<SliderProps> = ({ title, addHref, items, type }) => {
+const SliderSection: React.FunctionComponent<SliderProps> = ({ title, addHref, addTitle, items, type }) => {
   const SliderItem = itemTypeToSliderItem[type];
 
   const renderItems = () => {
@@ -78,7 +79,7 @@ const SliderSection: React.FunctionComponent<SliderProps> = ({ title, addHref, i
       <div className={Styles.header}>
         <h2>{title}</h2>
         <Button color="secondary" component={Link} to={addHref}>
-          + Add
+          {addTitle}
         </Button>
       </div>
       {renderItems()}

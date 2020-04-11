@@ -27,8 +27,20 @@ const FavoritesPage: React.FunctionComponent<AllProps> = (props) => {
   }, []);
   return (
     <div>
-      <RoutineSlider title="Plans" addHref="/plan/create" items={props.routines} type={ItemType.ROUTINE} />
-      <RoutineSlider title="Workouts" addHref="/workout/create" items={props.workouts} type={ItemType.WORKOUT} />
+      <RoutineSlider
+        title="Plans"
+        addHref="/plan/create"
+        addTitle="+ NEW PLAN"
+        items={props.routines}
+        type={ItemType.ROUTINE}
+      />
+      <RoutineSlider
+        title="Workouts"
+        addHref="/workout/create"
+        addTitle="+ NEW WORKOUT"
+        items={props.workouts}
+        type={ItemType.WORKOUT}
+      />
     </div>
   );
 };
