@@ -9,11 +9,13 @@ import { configureStore } from "./configure-store";
 import routes from "./routes";
 
 import "Styleguide/global.scss";
+import { ThemeProvider } from "@material-ui/core";
+import theme from "./styleguide/theme";
 
 const initialState: ApplicationState = {
-  content: { routines: [], workouts: [] },
+  content: { routines: [], workouts: [], exercises: [], bodyParts: [] },
   activeItem: { routine: null, workout: null },
-  modal: { type: null, props: null, result: null }
+  modal: { type: null, props: null, result: null },
 };
 
 const store = configureStore(initialState);
@@ -21,7 +23,9 @@ const store = configureStore(initialState);
 const App = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 };
