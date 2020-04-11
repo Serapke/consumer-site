@@ -3,6 +3,7 @@ import FavoritesPage from "Pages/favorites";
 import WorkoutPage from "Pages/workout/workout-page";
 import RootPage from "Pages/root";
 import WorkoutCreatePage from "Pages/workout/workout-create-page";
+import SelectExercisePage from "Pages/exercise/exercise-select-page";
 
 export default [
   {
@@ -24,6 +25,10 @@ export default [
       {
         component: WorkoutPage,
         path: "/workout/:id",
+      },
+      {
+        component: SelectExercisePage,
+        path: "/exercise/select",
       },
     ],
   },

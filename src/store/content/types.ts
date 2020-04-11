@@ -1,14 +1,18 @@
 import { Action } from "redux";
-import { Routine, Workout } from "Store/types";
+import { Routine, Workout, Exercise } from "Store/types";
 
 export interface ContentState {
   routines: Routine[];
   workouts: Workout[];
+  exercises: Exercise[];
+  bodyParts: string[];
 }
 
 export enum ContentActionType {
   ROUTINES_LIST_UPDATED = "@@content/ROUTINES_LIST_UPDATED",
-  WORKOUTS_LIST_UPDATED = "@@content/WORKOUTS_LIST_UPDATED"
+  WORKOUTS_LIST_UPDATED = "@@content/WORKOUTS_LIST_UPDATED",
+  EXERCISE_LIST_UPDATED = "@@content/EXERCISE_LIST_UPDATED",
+  BODY_PART_LIST_UPDATED = "@@content/BODY_PART_LIST_UPDATED",
 }
 
 export interface RoutinesListUpdatedAction extends Action {
@@ -21,4 +25,18 @@ export interface WorkoutsListUpdatedAction extends Action {
   workouts: Workout[];
 }
 
-export type ContentActions = RoutinesListUpdatedAction | WorkoutsListUpdatedAction;
+export interface ExerciseListUpdatedAction extends Action {
+  type: ContentActionType.EXERCISE_LIST_UPDATED;
+  exercises: Exercise[];
+}
+
+export interface BodyPartListUpdatedAction extends Action {
+  type: ContentActionType.BODY_PART_LIST_UPDATED;
+  bodyParts: string[];
+}
+
+export type ContentActions =
+  | RoutinesListUpdatedAction
+  | WorkoutsListUpdatedAction
+  | BodyPartListUpdatedAction
+  | ExerciseListUpdatedAction;

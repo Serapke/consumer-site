@@ -1,19 +1,19 @@
-import { getWorkout, updateWorkout } from "Services/workout.ts";
-import { updateActiveWorkout, updateTask } from "./actions";
+import { updateActiveWorkout } from "./actions";
 import { ThunkAction } from "redux-thunk";
 import { ApplicationState } from "..";
 import { ActiveItemActions } from "./types";
 import { Task, Workout } from "Store/types";
 import { updateIdentifiableObjectInArray } from "Store/helper";
+import { getWorkout, updateWorkout } from "Services/workout";
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, ApplicationState, unknown, ActiveItemActions>;
 
-export const fetchWorkoutRequest = (id: string): AppThunk => async dispatch => {
+export const fetchWorkoutRequest = (id: string): AppThunk => async (dispatch) => {
   const workout = await getWorkout(id);
   dispatch(updateActiveWorkout(workout));
 };
 
-export const updateWorkoutRequest = (workout: Workout): AppThunk => async dispatch => {
+export const updateWorkoutRequest = (workout: Workout): AppThunk => async (dispatch) => {
   const updatedWorkout = await updateWorkout(workout);
   dispatch(updateActiveWorkout(updatedWorkout));
 };
@@ -29,7 +29,7 @@ export const updateTaskRequest = (task: Task): AppThunk => async (dispatch, getS
   const workout = getState().activeItem.workout;
   const updatedWorkout = await updateWorkout({
     ...workout,
-    tasks: updateIdentifiableObjectInArray(workout.tasks, task)
+    tasks: updateIdentifiableObjectInArray(workout.tasks, task),
   });
   dispatch(updateActiveWorkout(updatedWorkout));
 };

@@ -6,10 +6,11 @@ import { Workout } from "Store/types";
 import { fetchWorkoutRequest, updateTasksRequest } from "Store/active-item/thunks";
 import { showModalRequest } from "Store/modal/thunks";
 import TaskList from "Components/task-list";
-import Button from "Components/button";
 
 import * as Styles from "./workout-page.scss";
 import { ModalType } from "Components/modal/modal";
+import LinkButton from "Components/link-button";
+import { PlusOne, Add } from "@material-ui/icons";
 
 interface RouteParams {
   id: string;
@@ -38,8 +39,8 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ workout, match, fetchW
     showModal({
       type: ModalType.WorkoutTitleEditingDialog,
       props: {
-        workout
-      }
+        workout,
+      },
     });
   };
 
@@ -49,23 +50,23 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ workout, match, fetchW
         <h2 className={Styles.title}>{workout.title}</h2>
       </div>
       <div className={Styles.addTaskButton}>
-        <Button type="button" style="secondary">
-          + Add
-        </Button>
+        <LinkButton style="secondary" link={`/exercise/select`}>
+          <Add fontSize="large" />
+        </LinkButton>
       </div>
       <TaskList tasks={workout.tasks} showModal={showModal} updateTasks={updateTasks} />
     </div>
   );
 };
 
-const mapStateToProps = ({ activeItem }: ApplicationState, _props: AllProps) => ({
-  workout: activeItem.workout
+const mapStateToProps = ({ activeItem }: ApplicationState) => ({
+  workout: activeItem.workout,
 });
 
 const mapDispatchToProps = {
   fetchWorkout: fetchWorkoutRequest,
   updateTasks: updateTasksRequest,
-  showModal: showModalRequest
+  showModal: showModalRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkoutPage);

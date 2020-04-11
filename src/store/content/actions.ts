@@ -1,13 +1,29 @@
 import { ActionCreator } from "redux";
-import { ContentActionType, RoutinesListUpdatedAction, WorkoutsListUpdatedAction } from "./types";
-import { Routine, Workout } from "Store/types";
+import {
+  ContentActionType,
+  RoutinesListUpdatedAction,
+  WorkoutsListUpdatedAction,
+  BodyPartListUpdatedAction,
+  ExerciseListUpdatedAction,
+} from "./types";
+import { Routine, Workout, Exercise } from "Store/types";
 
 export const updateRoutineList: ActionCreator<RoutinesListUpdatedAction> = (routines: Routine[]) => ({
   type: ContentActionType.ROUTINES_LIST_UPDATED,
-  routines
+  routines,
 });
 
 export const updateWorkoutList: ActionCreator<WorkoutsListUpdatedAction> = (workouts: Workout[]) => ({
   type: ContentActionType.WORKOUTS_LIST_UPDATED,
-  workouts
+  workouts,
+});
+
+export const updateExerciseList: ActionCreator<ExerciseListUpdatedAction> = (exercises: Exercise[]) => ({
+  type: ContentActionType.EXERCISE_LIST_UPDATED,
+  exercises,
+});
+
+export const updateBodyPartList: ActionCreator<BodyPartListUpdatedAction> = (bodyParts: string[]) => ({
+  type: ContentActionType.BODY_PART_LIST_UPDATED,
+  bodyParts,
 });

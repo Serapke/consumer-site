@@ -3,7 +3,9 @@ import { ContentState, ContentActions, ContentActionType } from "./types";
 
 export const initialState: ContentState = {
   routines: [],
-  workouts: []
+  workouts: [],
+  exercises: [],
+  bodyParts: [],
 };
 
 const reducer: Reducer<ContentState> = (state: ContentState = initialState, action: ContentActions) => {
@@ -12,6 +14,10 @@ const reducer: Reducer<ContentState> = (state: ContentState = initialState, acti
       return { ...state, routines: action.routines };
     case ContentActionType.WORKOUTS_LIST_UPDATED:
       return { ...state, workouts: action.workouts };
+    case ContentActionType.EXERCISE_LIST_UPDATED:
+      return { ...state, exercises: action.exercises };
+    case ContentActionType.BODY_PART_LIST_UPDATED:
+      return { ...state, bodyParts: action.bodyParts };
     default:
       return state;
   }
