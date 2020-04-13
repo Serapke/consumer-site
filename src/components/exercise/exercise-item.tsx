@@ -49,11 +49,13 @@ const ExerciseItem = ({ exercise, selected, onClick }: OwnProps) => {
       </ListItemAvatar>
       <div className={classes.listItemText}>
         <ListItemText primary={exercise.title} />
-        {exercise.bodyParts.map((bodyPart) => (
-          <span key={bodyPart} className={classes.tag}>
-            {capitalizeWord(bodyPart)}
-          </span>
-        ))}
+        <div>
+          {exercise.bodyParts.map((bodyPart) => (
+            <span key={bodyPart} className={classes.tag}>
+              {capitalizeWord(bodyPart)}
+            </span>
+          ))}
+        </div>
       </div>
       <span className={`${classes.statusIcon} ${selected ? classes.selected : ""}`}>
         {selected ? <Check color="secondary" /> : <Add color="secondary" />}

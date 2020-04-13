@@ -1,4 +1,4 @@
-import { Exercise } from "Store/types";
+import { Exercise, BodyPart } from "Store/types";
 import { ApiResponse } from "./types";
 
 export const getAllExercises: () => Promise<Exercise[]> = async () => {
@@ -6,7 +6,7 @@ export const getAllExercises: () => Promise<Exercise[]> = async () => {
   return response.json();
 };
 
-export const getBodyParts: () => Promise<string[]> = async () => {
+export const getBodyParts: () => Promise<BodyPart[]> = async () => {
   const response = await fetch("http://localhost:8080/exercise/body-parts");
   return response.json();
 };

@@ -6,7 +6,7 @@ import {
   BodyPartListUpdatedAction,
   ExerciseListUpdatedAction,
 } from "./types";
-import { Routine, Workout, Exercise } from "Store/types";
+import { Routine, Workout, Exercise, BodyPart } from "Store/types";
 
 export const updateRoutineList: ActionCreator<RoutinesListUpdatedAction> = (routines: Routine[]) => ({
   type: ContentActionType.ROUTINES_LIST_UPDATED,
@@ -23,7 +23,7 @@ export const updateExerciseList: ActionCreator<ExerciseListUpdatedAction> = (exe
   exercises,
 });
 
-export const updateBodyPartList: ActionCreator<BodyPartListUpdatedAction> = (bodyParts: string[]) => ({
+export const updateBodyPartList: ActionCreator<BodyPartListUpdatedAction> = (bodyParts: BodyPart[]) => ({
   type: ContentActionType.BODY_PART_LIST_UPDATED,
   bodyParts,
 });

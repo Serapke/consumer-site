@@ -17,18 +17,19 @@ import { Clear } from "@material-ui/icons";
 import { RouteComponentProps, Link } from "react-router-dom";
 import { fetchBodyPartsRequest, fetchExercisesRequest } from "Store/content/thunks";
 import { ApplicationState } from "Store/index";
-import { Exercise } from "Store/types";
+import { Exercise, BodyPart } from "Store/types";
 import ExerciseItem from "Components/exercise";
 import * as Styles from "./exercise-select-page.scss";
 import { capitalizeWord } from "Utils/text-utils";
 import { removeItem } from "Utils/immutable";
+import EmptyState from "Components/empty-state";
 
 interface RouteParams {
   id: string;
 }
 
 interface PropsFromState {
-  bodyParts: string[];
+  bodyParts: BodyPart[];
   exercises: Exercise[];
 }
 
@@ -67,20 +68,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetchExercises }: OwnProps) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const [selectedBodyParts, setSelectedBodyParts] = React.useState<BodyPart[]>([]);
   const classes = useStyles();
 
   React.useEffect(() => {
     fetchBodyParts();
     fetchExercises();
   }, [match.params.id]);
-
-  const onChipClicked = () => {
-    console.log("on chip clikc");
-  };
-
-  const onChipDelete = () => {
-    console.log("on chip delete");
-  };
 
   const onExerciseClick = (id: string) => {
     if (isSelected(id)) {
@@ -93,6 +87,24 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
   const isSelected = (id: string) => {
     return selectedItems.includes(id);
   };
+
+  const onBodyPartClicked = (bodyPart: BodyPart) => () => {
+    if (isSelectedBodyPart(bodyPart)) {
+      setSelectedBodyParts((prevState) => removeItem(prevState, { index: selectedBodyParts.indexOf(bodyPart) }));
+    } else {
+      setSelectedBodyParts((prevState) => [...prevState, bodyPart]);
+    }
+  };
+
+  const isSelectedBodyPart = (bodyPart: BodyPart) => {
+    return selectedBodyParts.includes(bodyPart);
+  };
+
+  const filteredExercises = exercises.filter((exercise) => {
+    const bodyPartFilter = selectedBodyParts.every((bodyPart) => exercise.bodyParts.includes(bodyPart));
+    const searchQueryFilter = !searchQuery.length || exercise.title.toLowerCase().startsWith(searchQuery.toLowerCase());
+    return bodyPartFilter && searchQueryFilter;
+  });
 
   return (
     <div>
@@ -121,29 +133,30 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
       <div className={Styles.chipContainer}>
         {bodyParts.map((bodyPart) => (
           <Chip
-            color="secondary"
+            color={isSelectedBodyPart(bodyPart) ? "secondary" : "default"}
             key={bodyPart}
             size="medium"
             label={capitalizeWord(bodyPart)}
-            clickable
-            onClick={onChipClicked}
-            onDelete={onChipDelete}
+            onClick={onBodyPartClicked(bodyPart)}
             style={{ margin: "3px" }}
+            clickable
           />
         ))}
       </div>
-      <div>
-        <List>
-          {exercises.map((exercise, index) => (
+      <List>
+        {filteredExercises.length ? (
+          filteredExercises.map((exercise, index) => (
             <ExerciseItem
               key={exercise.id + "_" + index}
               exercise={exercise}
               selected={isSelected(exercise.id)}
               onClick={onExerciseClick}
             />
-          ))}
-        </List>
-      </div>
+          ))
+        ) : (
+          <EmptyState primaryText="No exercises matched your search." />
+        )}
+      </List>
       <Fab className={classes.fab} color="secondary" variant="extended">
         Continue
       </Fab>

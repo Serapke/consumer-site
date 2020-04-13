@@ -21,7 +21,9 @@ export interface Exercise {
   id: string;
   title: string;
   description: string;
-  bodyParts: ("SHOULDERS" | "ARMS" | "CHEST" | "ABS" | "BACK" | "BUTT" | "LEGS")[];
+  bodyParts: BodyPart[];
   defaultReps: number;
   type: "TIMED" | "QUANTITATIVE";
 }
+
+export type BodyPart = "SHOULDERS" | "ARMS" | "CHEST" | "ABS" | "BACK" | "BUTT" | "LEGS";

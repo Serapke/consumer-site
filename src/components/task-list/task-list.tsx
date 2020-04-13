@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { reorder } from "Utils/immutable";
 import { updateTasksRequest } from "Store/active-item/thunks";
 import { makeStyles, createStyles, Theme } from "@material-ui/core";
+import EmptyState from "Components/empty-state";
 
 interface OwnProps {
   tasks: Task[];
@@ -15,34 +16,11 @@ interface OwnProps {
   updateTasks: typeof updateTasksRequest;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    emptyList: {
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%,-50%)",
-      textAlign: "center",
-      color: "#909090",
-    },
-  })
-);
-
-const EmptyList = () => {
-  const classes = useStyles();
-  return (
-    <div className={classes.emptyList}>
-      <div>No exercises yet.</div>
-      <div>Press + to add it</div>
-    </div>
-  );
-};
-
 const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
   const [activeTask, setActiveTask] = React.useState<number | false>(false);
 
   if (!tasks || !tasks.length) {
-    return <EmptyList />;
+    return <EmptyState primaryText="No exercises yet." secondaryText="Press + to add it" />;
   }
 
   const onTaskClick = (taskID: number) => (_e: React.ChangeEvent<{}>, isExpanded: boolean) => {
