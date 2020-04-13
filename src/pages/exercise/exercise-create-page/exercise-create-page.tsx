@@ -7,7 +7,7 @@ import { ApplicationState } from "Store/index";
 import { RouteComponentProps } from "react-router-dom";
 import { capitalizeWord } from "../../../utils/text-utils";
 import { Exercise } from "Store/types";
-import { createExerciseRequest } from "Store/active-item/thunks";
+import { createExercise } from "Services/exercise";
 
 interface RouteParams {
   id: string;
@@ -19,7 +19,6 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   fetchBodyParts: typeof fetchBodyPartsRequest;
-  createExercise: typeof createExerciseRequest;
 }
 
 type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps<RouteParams>;
@@ -76,7 +75,7 @@ const formToExercise = (form: FormState): Exercise => {
   };
 };
 
-const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }: OwnProps) => {
+const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnProps) => {
   const bodyPartsInputRef = React.createRef<HTMLInputElement>();
   const classes = useStyles();
 
@@ -97,7 +96,6 @@ const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }
   };
 
   const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target);
     changeFormField(event.target.id as keyof FormState, { value: event.target.value, errorMessage: "" });
   };
 
@@ -117,7 +115,19 @@ const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }
     event.preventDefault();
     validate();
     const exercise = formToExercise(form);
-    createExercise(exercise);
+    createExercise(exercise).then((res) => {
+      if (res.errors) {
+        setForm((prevState) =>
+          Object.entries(prevState).reduce((newState, [field, value]) => {
+            newState[field as keyof FormState] = value;
+            newState[field as keyof FormState].errorMessage = res.errors[field] as string;
+            return newState;
+          }, {} as FormState)
+        );
+      } else {
+        history.goBack();
+      }
+    });
   };
 
   const validate = () => {
@@ -141,6 +151,8 @@ const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }
             label="Title"
             color="secondary"
             value={form.title.value}
+            error={!!form.title.errorMessage}
+            helperText={form.title.errorMessage}
             onChange={onTextFieldChange}
             required
           />
@@ -152,7 +164,9 @@ const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }
             label="Description"
             color="secondary"
             value={form.description.value}
-            rowsMax={3}
+            rowsMax={5}
+            error={!!form.description.errorMessage}
+            helperText={form.description.errorMessage}
             onChange={onTextFieldChange}
             multiline
             required
@@ -165,6 +179,8 @@ const ExerciseCreatePage = ({ bodyParts, match, fetchBodyParts, createExercise }
             label="Default number of"
             type="number"
             value={form.defaultReps.value}
+            error={!!form.defaultReps.errorMessage}
+            helperText={form.defaultReps.errorMessage}
             onChange={onTextFieldChange}
             required
           />
@@ -215,7 +231,6 @@ const mapStateToProps = ({ content }: ApplicationState) => ({
 
 const mapDispatchToProps = {
   fetchBodyParts: fetchBodyPartsRequest,
-  createExercise: createExerciseRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseCreatePage);

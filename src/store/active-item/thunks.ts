@@ -34,9 +34,3 @@ export const updateTaskRequest = (task: Task): AppThunk => async (dispatch, getS
   });
   dispatch(updateActiveWorkout(updatedWorkout));
 };
-
-export const createExerciseRequest = (exercise: Exercise): AppThunk => async (dispatch) => {
-  const status = await createExercise(exercise);
-  console.log(status);
-  // dispatch(updateActiveExercise(exercise));
-};
