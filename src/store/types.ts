@@ -23,5 +23,5 @@ export interface Exercise {
   description: string;
   bodyParts: ("SHOULDERS" | "ARMS" | "CHEST" | "ABS" | "BACK" | "BUTT" | "LEGS")[];
   defaultReps: number;
-  type: "TIMED" | "QUANTITATIVE" | "STRETCH";
+  type: "TIMED" | "QUANTITATIVE";
 }

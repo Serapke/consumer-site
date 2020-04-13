@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const SelectExercisePage = ({ bodyParts, exercises, match, fetchBodyParts, fetchExercises }: OwnProps) => {
+const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetchExercises }: OwnProps) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const classes = useStyles();
 
@@ -143,4 +143,4 @@ const mapDispatchToProps = {
   fetchExercises: fetchExercisesRequest,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectExercisePage);
+export default connect(mapStateToProps, mapDispatchToProps)(ExerciseSelectPage);
