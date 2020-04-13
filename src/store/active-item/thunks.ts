@@ -3,7 +3,7 @@ import { ThunkAction } from "redux-thunk";
 import { ApplicationState } from "..";
 import { ActiveItemActions } from "./types";
 import { Task, Workout, Exercise } from "Store/types";
-import { updateIdentifiableObjectInArray } from "Store/helper";
+import { updateIdentifiableObjectInArray } from "Utils/immutable";
 import { getWorkout, updateWorkout } from "Services/workout";
 import { createExercise } from "Services/exercise";
 

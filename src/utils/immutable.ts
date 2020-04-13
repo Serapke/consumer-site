@@ -1,5 +1,3 @@
-import { Task } from "./types";
-
 export function updateObjectInArray<T>(array: T[], action: { item: T; index: number }) {
   return array.map((item, index) => {
     if (index !== action.index) {
@@ -15,7 +13,7 @@ interface Identifiable extends Object {
 }
 
 export function updateIdentifiableObjectInArray<T extends Identifiable>(array: T[], target: T) {
-  return array.map(item => {
+  return array.map((item) => {
     if (item.id !== target.id) {
       return item;
     }

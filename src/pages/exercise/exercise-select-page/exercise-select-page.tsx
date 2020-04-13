@@ -1,27 +1,27 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import {
-  Fab,
-  IconButton,
-  FormControl,
-  InputLabel,
   Input,
   makeStyles,
   createStyles,
   Theme,
   Chip,
-  List,
   Button,
+  FormControl,
+  InputLabel,
+  IconButton,
+  List,
+  Fab,
 } from "@material-ui/core";
-import { Clear, Add } from "@material-ui/icons";
+import { Clear } from "@material-ui/icons";
 import { RouteComponentProps, Link } from "react-router-dom";
 import { fetchBodyPartsRequest, fetchExercisesRequest } from "Store/content/thunks";
 import { ApplicationState } from "Store/index";
 import { Exercise } from "Store/types";
 import ExerciseItem from "Components/exercise";
-
 import * as Styles from "./exercise-select-page.scss";
-import { capitalizeWord } from "../../../utils/text-utils";
+import { capitalizeWord } from "Utils/text-utils";
+import { removeItem } from "Utils/immutable";
 
 interface RouteParams {
   id: string;
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetchExercises }: OwnProps) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const classes = useStyles();
 
   React.useEffect(() => {
@@ -79,6 +80,18 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
 
   const onChipDelete = () => {
     console.log("on chip delete");
+  };
+
+  const onExerciseClick = (id: string) => {
+    if (isSelected(id)) {
+      setSelectedItems((prevState) => removeItem(prevState, { index: selectedItems.indexOf(id) }));
+    } else {
+      setSelectedItems((prevState) => [...prevState, id]);
+    }
+  };
+
+  const isSelected = (id: string) => {
+    return selectedItems.includes(id);
   };
 
   return (
@@ -122,7 +135,12 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
       <div>
         <List>
           {exercises.map((exercise, index) => (
-            <ExerciseItem key={exercise.id + "_" + index} exercise={exercise} onClick={() => console.log("click")} />
+            <ExerciseItem
+              key={exercise.id + "_" + index}
+              exercise={exercise}
+              selected={isSelected(exercise.id)}
+              onClick={onExerciseClick}
+            />
           ))}
         </List>
       </div>

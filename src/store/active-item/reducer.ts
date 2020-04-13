@@ -1,10 +1,10 @@
 import { Reducer } from "redux";
 import { ActiveItemState, ActiveItemActions, ActiveItemActionType } from "./types";
-import { updateIdentifiableObjectInArray } from "../helper";
+import { updateIdentifiableObjectInArray } from "Utils/immutable";
 
 export const initialState: ActiveItemState = {
   routine: null,
-  workout: null
+  workout: null,
 };
 
 const reducer: Reducer<ActiveItemState> = (state: ActiveItemState = initialState, action: ActiveItemActions) => {
@@ -16,8 +16,8 @@ const reducer: Reducer<ActiveItemState> = (state: ActiveItemState = initialState
         ...state,
         workout: {
           ...state.workout,
-          tasks: updateIdentifiableObjectInArray(state.workout.tasks, action.task)
-        }
+          tasks: updateIdentifiableObjectInArray(state.workout.tasks, action.task),
+        },
       };
     default:
       return state;

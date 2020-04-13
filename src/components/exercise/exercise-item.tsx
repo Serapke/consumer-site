@@ -1,32 +1,63 @@
 import * as React from "react";
-import { ListItem, ListItemText } from "@material-ui/core";
-import { Check, Add } from "@material-ui/icons";
+import { ListItem, ListItemText, ListItemAvatar, Avatar, makeStyles, Theme, createStyles } from "@material-ui/core";
+import { Check, Add, Folder } from "@material-ui/icons";
 import { Exercise } from "Store/types";
-
-import * as Styles from "./exercise-item.scss";
 import { capitalizeWord } from "../../utils/text-utils";
+import squatIcon from "../../images/squat.png";
 
 interface OwnProps {
   exercise: Exercise;
-  onClick: () => void;
+  selected: boolean;
+  onClick: (id: string) => void;
 }
 
-const ExerciseItem = ({ exercise, onClick }: OwnProps) => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    black: {
+      color: "black",
+      backgroundColor: theme.palette.secondary.main,
+    },
+    listItemText: {
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+    },
+    tag: {
+      fontSize: "12px",
+      margin: theme.spacing(0.25, 0.5),
+    },
+    statusIcon: {
+      display: "flex",
+      background: "#e5e5e5",
+      borderRadius: "50%",
+      padding: "7px",
+    },
+    selected: {
+      background: "black",
+    },
+  })
+);
+
+const ExerciseItem = ({ exercise, selected, onClick }: OwnProps) => {
+  const classes = useStyles();
   return (
-    <ListItem button onClick={onClick}>
-      <div className={Styles.container}>
-        <div>
-          <ListItemText primary={exercise.title} />
-          {exercise.bodyParts.map((bodyPart) => (
-            <span key={bodyPart} className={Styles.tags}>
-              {capitalizeWord(bodyPart)}
-            </span>
-          ))}
-        </div>
-        <div className={Styles.statusIcon}>
-          {exercise.id % 2 == 0 ? <Check color="secondary" /> : <Add color="secondary" />}
-        </div>
+    <ListItem button onClick={() => onClick(exercise.id)}>
+      <ListItemAvatar>
+        <Avatar className={classes.black}>
+          <img src={squatIcon} />
+        </Avatar>
+      </ListItemAvatar>
+      <div className={classes.listItemText}>
+        <ListItemText primary={exercise.title} />
+        {exercise.bodyParts.map((bodyPart) => (
+          <span key={bodyPart} className={classes.tag}>
+            {capitalizeWord(bodyPart)}
+          </span>
+        ))}
       </div>
+      <span className={`${classes.statusIcon} ${selected ? classes.selected : ""}`}>
+        {selected ? <Check color="secondary" /> : <Add color="secondary" />}
+      </span>
     </ListItem>
   );
 };

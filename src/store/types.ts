@@ -18,7 +18,7 @@ export interface Task {
 }
 
 export interface Exercise {
-  id: number;
+  id: string;
   title: string;
   description: string;
   bodyParts: ("SHOULDERS" | "ARMS" | "CHEST" | "ABS" | "BACK" | "BUTT" | "LEGS")[];

@@ -11,7 +11,8 @@
       "Components/*": ["./src/components/*"],
       "Pages/*": ["./src/pages/*"],
       "Services/*": ["./src/services/*"],
-      "Store/*": ["./src/store/*"]
+      "Store/*": ["./src/store/*"],
+      "Utils/*": ["./src/utils/*"]
     }
   }
 }

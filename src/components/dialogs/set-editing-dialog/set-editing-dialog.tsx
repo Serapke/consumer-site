@@ -4,7 +4,7 @@ import { CommonDialogActions } from "Components/modal/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { updateTaskRequest } from "Store/active-item/thunks";
-import { updateObjectInArray, removeItem } from "Store/helper";
+import { updateObjectInArray, removeItem } from "Utils/immutable";
 import { ActionType, SetEditingDialogProps } from "Store/modal/types";
 
 import * as Styles from "./set-editing-dialog.scss";
@@ -25,12 +25,12 @@ const SetEditingDialog = ({ hide, task, index, action, updateTask }: OwnProps) =
     if (action === ActionType.UPDATE) {
       updateTask({
         ...task,
-        sets: updateObjectInArray(task.sets, { index, item: repetitions })
+        sets: updateObjectInArray(task.sets, { index, item: repetitions }),
       });
     } else if (action === ActionType.ADD) {
       updateTask({
         ...task,
-        sets: [...task.sets, repetitions]
+        sets: [...task.sets, repetitions],
       });
     }
     hide();
@@ -39,7 +39,7 @@ const SetEditingDialog = ({ hide, task, index, action, updateTask }: OwnProps) =
   const handleDelete = () => {
     updateTask({
       ...task,
-      sets: removeItem(task.sets, { index })
+      sets: removeItem(task.sets, { index }),
     });
     hide();
   };
@@ -82,7 +82,7 @@ const SetEditingDialog = ({ hide, task, index, action, updateTask }: OwnProps) =
 };
 
 const mapDispatchToProps = {
-  updateTask: updateTaskRequest
+  updateTask: updateTaskRequest,
 };
 
 export default connect(null, mapDispatchToProps)(SetEditingDialog);

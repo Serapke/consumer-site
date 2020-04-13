@@ -5,7 +5,7 @@ import { ModalType } from "Components/modal/modal";
 import { showModalRequest } from "Store/modal/thunks";
 import { ActionType } from "Store/modal/types";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { reorder } from "Store/helper";
+import { reorder } from "Utils/immutable";
 import { updateTasksRequest } from "Store/active-item/thunks";
 import { makeStyles, createStyles, Theme } from "@material-ui/core";
 
