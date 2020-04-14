@@ -1,21 +1,38 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { showModalRequest } from "Store/modal/thunks";
-import { TextField, Fab, makeStyles, createStyles, Theme, Button, IconButton } from "@material-ui/core";
+import { TextField, makeStyles, createStyles, Theme, Button, InputAdornment, Grid } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
+import { ApplicationState } from "Store/index";
+import { Workout } from "Store/types";
+import { saveWorkoutProgressRequest } from "Store/active-item/thunks";
+import { createWorkout } from "Services/workout";
+
+interface PropsFromState {
+  workout: Workout;
+}
 
 interface PropsFromDispatch {
   showModal: typeof showModalRequest;
+  saveWorkoutProgress: typeof saveWorkoutProgressRequest;
 }
 
-type OwnProps = PropsFromDispatch;
+type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px)`,
+    },
+    grid: {
+      height: "100%",
+    },
     button: {
-      marginTop: theme.spacing(2),
+      margin: theme.spacing(2, 0),
       width: "100%",
     },
     fab: {
@@ -31,13 +48,87 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const WorkoutCreatePage = ({ showModal }: OwnProps) => {
+interface FieldState {
+  value: any;
+  errorMessage: string;
+}
+
+interface WorkoutState {
+  title: FieldState;
+  restPeriodInSeconds: FieldState;
+  tasks: FieldState;
+}
+
+const emptyState: WorkoutState = {
+  title: { value: "", errorMessage: null },
+  restPeriodInSeconds: { value: null, errorMessage: null },
+  tasks: { value: [], errorMessage: null },
+};
+
+const stateFromWorkout = (workout: Workout): WorkoutState =>
+  workout && !workout.id
+    ? {
+        title: { value: workout.title, errorMessage: null },
+        restPeriodInSeconds: { value: workout.restPeriodInSeconds, errorMessage: null },
+        tasks: { value: workout.tasks, errorMessage: null },
+      }
+    : emptyState;
+
+const stateToWorkout = (state: WorkoutState): Workout => ({
+  id: null,
+  title: state.title.value,
+  restPeriodInSeconds: state.restPeriodInSeconds.value,
+  tasks: state.tasks.value,
+});
+
+const removeTaskIDs = ({ id, title, restPeriodInSeconds, tasks }: Workout): Workout => ({
+  id,
+  title,
+  restPeriodInSeconds,
+  tasks: tasks.map((task) => ({ ...task, id: null })),
+});
+
+const WorkoutCreatePage = ({ workout, history, showModal, saveWorkoutProgress }: OwnProps) => {
   const classes = useStyles();
+  const [state, setState] = React.useState<WorkoutState>(stateFromWorkout(workout));
+
+  const changeStateField = (field: keyof WorkoutState, value: { value?: any; errorMessage: string }) => {
+    setState((prevState) => ({ ...prevState, [field]: { ...prevState[field], ...value } }));
+  };
+
+  const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    changeStateField(event.target.id as keyof WorkoutState, {
+      value: event.target.value,
+      errorMessage: "",
+    });
+  };
+
+  const onAddClick = () => {
+    saveWorkoutProgress(stateToWorkout(state));
+  };
+
+  const onSaveClick = () => {
+    const workout = stateToWorkout(state);
+    createWorkout(removeTaskIDs(workout)).then((res) => {
+      if (res.errors) {
+        console.log(res.errors);
+      } else {
+        history.goBack();
+      }
+    });
+  };
+
   return (
-    <div>
-      <div>
-        <TextField id="standard-basic" label="Title" fullWidth color="secondary" />
-      </div>
+    <div className={classes.container}>
+      <TextField
+        id="title"
+        name="title"
+        label="Title"
+        color="secondary"
+        value={state.title.value}
+        onChange={onTextFieldChange}
+        fullWidth
+      />
       <Button
         className={classes.button}
         size="large"
@@ -45,19 +136,38 @@ const WorkoutCreatePage = ({ showModal }: OwnProps) => {
         variant="contained"
         component={Link}
         to="/exercise/select"
+        onClick={onAddClick}
       >
         <Add fontSize="large" />
       </Button>
-      <TaskList tasks={[]} showModal={showModal} updateTasks={null} />
-      <Fab className={classes.fab} color="secondary" variant="extended">
+      <Grid className={classes.grid} direction="column" justify="space-between" container>
+        <TaskList tasks={state.tasks.value} showModal={showModal} updateTasks={null} />
+        <TextField
+          id="restPeriodInSeconds"
+          name="restPeriodInSeconds"
+          label="Rest between sets"
+          color="secondary"
+          type="number"
+          value={state.restPeriodInSeconds.value}
+          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          onChange={onTextFieldChange}
+          fullWidth
+        />
+      </Grid>
+      <Button className={classes.fab} color="secondary" variant="contained" onClick={onSaveClick}>
         Save
-      </Fab>
+      </Button>
     </div>
   );
 };
 
+const mapStateToProps = ({ activeItem }: ApplicationState) => ({
+  workout: activeItem.workout,
+});
+
 const mapDispatchToProps = {
   showModal: showModalRequest,
+  saveWorkoutProgress: saveWorkoutProgressRequest,
 };
 
-export default connect(null, mapDispatchToProps)(WorkoutCreatePage);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkoutCreatePage);

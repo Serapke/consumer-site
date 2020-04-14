@@ -11,10 +11,9 @@ import {
   InputLabel,
   IconButton,
   List,
-  Fab,
 } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { fetchBodyPartsRequest, fetchExercisesRequest } from "Store/content/thunks";
 import { ApplicationState } from "Store/index";
 import { Exercise, BodyPart } from "Store/types";
@@ -23,10 +22,7 @@ import * as Styles from "./exercise-select-page.scss";
 import { capitalizeWord } from "Utils/text-utils";
 import { removeItem } from "Utils/immutable";
 import EmptyState from "Components/empty-state";
-
-interface RouteParams {
-  id: string;
-}
+import { saveWorkoutTasksRequest } from "Store/active-item/thunks";
 
 interface PropsFromState {
   bodyParts: BodyPart[];
@@ -36,9 +32,10 @@ interface PropsFromState {
 interface PropsFromDispatch {
   fetchBodyParts: typeof fetchBodyPartsRequest;
   fetchExercises: typeof fetchExercisesRequest;
+  saveWorkoutTasks: typeof saveWorkoutTasksRequest;
 }
 
-type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps<RouteParams>;
+type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,7 +62,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetchExercises }: OwnProps) => {
+const ExerciseSelectPage = ({
+  bodyParts,
+  exercises,
+  history,
+  fetchBodyParts,
+  fetchExercises,
+  saveWorkoutTasks,
+}: OwnProps) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [selectedBodyParts, setSelectedBodyParts] = React.useState<BodyPart[]>([]);
@@ -74,7 +78,7 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
   React.useEffect(() => {
     fetchBodyParts();
     fetchExercises();
-  }, [match.params.id]);
+  }, []);
 
   const onExerciseClick = (id: string) => {
     if (isSelected(id)) {
@@ -105,6 +109,11 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
     const searchQueryFilter = !searchQuery.length || exercise.title.toLowerCase().startsWith(searchQuery.toLowerCase());
     return bodyPartFilter && searchQueryFilter;
   });
+
+  const onSelect = () => {
+    saveWorkoutTasks(selectedItems);
+    history.goBack();
+  };
 
   return (
     <div>
@@ -157,9 +166,9 @@ const ExerciseSelectPage = ({ bodyParts, exercises, match, fetchBodyParts, fetch
           <EmptyState primaryText="No exercises matched your search." />
         )}
       </List>
-      <Fab className={classes.fab} color="secondary" variant="extended">
-        Continue
-      </Fab>
+      <Button className={classes.fab} color="secondary" variant="contained" onClick={onSelect}>
+        Select
+      </Button>
     </div>
   );
 };
@@ -172,6 +181,7 @@ const mapStateToProps = ({ content }: ApplicationState) => ({
 const mapDispatchToProps = {
   fetchBodyParts: fetchBodyPartsRequest,
   fetchExercises: fetchExercisesRequest,
+  saveWorkoutTasks: saveWorkoutTasksRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseSelectPage);

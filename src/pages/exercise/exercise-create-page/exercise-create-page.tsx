@@ -64,16 +64,14 @@ const useStyles = makeStyles((theme) => ({
 
 const types = ["Repetitions", "Seconds"];
 
-const formToExercise = (form: FormState): Exercise => {
-  return {
-    id: null,
-    title: form.title.value,
-    description: form.description.value,
-    bodyParts: form.bodyParts.value,
-    defaultReps: form.defaultReps.value,
-    type: form.type.value === "Repetitions" ? "QUANTITATIVE" : "TIMED",
-  };
-};
+const formToExercise = (form: FormState): Exercise => ({
+  id: null,
+  title: form.title.value,
+  description: form.description.value,
+  bodyParts: form.bodyParts.value,
+  defaultReps: form.defaultReps.value,
+  type: form.type.value === "Repetitions" ? "QUANTITATIVE" : "TIMED",
+});
 
 const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnProps) => {
   const bodyPartsInputRef = React.createRef<HTMLInputElement>();

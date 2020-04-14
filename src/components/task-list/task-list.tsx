@@ -20,7 +20,11 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
   const [activeTask, setActiveTask] = React.useState<number | false>(false);
 
   if (!tasks || !tasks.length) {
-    return <EmptyState primaryText="No exercises yet." secondaryText="Press + to add it" />;
+    return (
+      <div>
+        <EmptyState primaryText="No exercises yet." secondaryText="Press + to add it" />
+      </div>
+    );
   }
 
   const onTaskClick = (taskID: number) => (_e: React.ChangeEvent<{}>, isExpanded: boolean) => {
@@ -73,7 +77,7 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
                 <TaskItem
                   index={index}
                   task={task}
-                  key={task.id}
+                  key={task.id + "_" + index}
                   expanded={activeTask === task.id}
                   onChange={onTaskClick(task.id)}
                   onSetClick={onSetClick}

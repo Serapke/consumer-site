@@ -2,10 +2,9 @@ import { updateActiveWorkout } from "./actions";
 import { ThunkAction } from "redux-thunk";
 import { ApplicationState } from "..";
 import { ActiveItemActions } from "./types";
-import { Task, Workout, Exercise } from "Store/types";
+import { Task, Workout } from "Store/types";
 import { updateIdentifiableObjectInArray } from "Utils/immutable";
 import { getWorkout, updateWorkout } from "Services/workout";
-import { createExercise } from "Services/exercise";
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, ApplicationState, unknown, ActiveItemActions>;
 
@@ -33,4 +32,24 @@ export const updateTaskRequest = (task: Task): AppThunk => async (dispatch, getS
     tasks: updateIdentifiableObjectInArray(workout.tasks, task),
   });
   dispatch(updateActiveWorkout(updatedWorkout));
+};
+
+export const saveWorkoutProgressRequest = (workout: Workout): AppThunk => async (dispatch) => {
+  dispatch(updateActiveWorkout(workout));
+};
+
+const mapExerciseIDToTask = (exerciseID: string, index: number, state: ApplicationState): Task => {
+  const exercise = state.content.exercises.find((exercise) => exercise.id === exerciseID);
+  return { id: index, exercise: exercise, sets: [exercise.defaultReps] };
+};
+
+export const saveWorkoutTasksRequest = (exerciseIDs: string[]): AppThunk => async (dispatch, getState) => {
+  const state = getState();
+  const workout = state.activeItem.workout;
+  dispatch(
+    updateActiveWorkout({
+      ...workout,
+      tasks: exerciseIDs.map((exerciseID, index) => mapExerciseIDToTask(exerciseID, index, state)),
+    })
+  );
 };
