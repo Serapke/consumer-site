@@ -7,7 +7,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
 import { ApplicationState } from "Store/index";
 import { Workout } from "Store/types";
-import { saveWorkoutProgressRequest } from "Store/active-item/thunks";
+import { saveWorkoutProgressRequest, updateTasksRequest } from "Store/active-item/thunks";
 import { createWorkout } from "Services/workout";
 
 interface PropsFromState {
@@ -16,6 +16,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   showModal: typeof showModalRequest;
+  updateTasks: typeof updateTasksRequest;
   saveWorkoutProgress: typeof saveWorkoutProgressRequest;
 }
 
@@ -61,18 +62,21 @@ interface WorkoutState {
 
 const emptyState: WorkoutState = {
   title: { value: "", errorMessage: null },
-  restPeriodInSeconds: { value: null, errorMessage: null },
+  restPeriodInSeconds: { value: "", errorMessage: null },
   tasks: { value: [], errorMessage: null },
 };
 
-const stateFromWorkout = (workout: Workout): WorkoutState =>
-  workout && !workout.id
-    ? {
-        title: { value: workout.title, errorMessage: null },
-        restPeriodInSeconds: { value: workout.restPeriodInSeconds, errorMessage: null },
-        tasks: { value: workout.tasks, errorMessage: null },
-      }
-    : emptyState;
+const stateFromWorkout = (workout: Workout): WorkoutState => {
+  const state =
+    workout && !workout.id
+      ? {
+          title: { value: workout.title, errorMessage: null },
+          restPeriodInSeconds: { value: workout.restPeriodInSeconds, errorMessage: null },
+          tasks: { value: workout.tasks, errorMessage: null },
+        }
+      : emptyState;
+  return state;
+};
 
 const stateToWorkout = (state: WorkoutState): Workout => ({
   id: null,
@@ -88,9 +92,11 @@ const removeTaskIDs = ({ id, title, restPeriodInSeconds, tasks }: Workout): Work
   tasks: tasks.map((task) => ({ ...task, id: null })),
 });
 
-const WorkoutCreatePage = ({ workout, history, showModal, saveWorkoutProgress }: OwnProps) => {
+const WorkoutCreatePage = ({ workout, history, showModal, updateTasks, saveWorkoutProgress }: OwnProps) => {
   const classes = useStyles();
   const [state, setState] = React.useState<WorkoutState>(stateFromWorkout(workout));
+
+  React.useEffect(() => setState(stateFromWorkout(workout)), [workout]);
 
   const changeStateField = (field: keyof WorkoutState, value: { value?: any; errorMessage: string }) => {
     setState((prevState) => ({ ...prevState, [field]: { ...prevState[field], ...value } }));
@@ -141,7 +147,7 @@ const WorkoutCreatePage = ({ workout, history, showModal, saveWorkoutProgress }:
         <Add fontSize="large" />
       </Button>
       <Grid className={classes.grid} direction="column" justify="space-between" container>
-        <TaskList tasks={state.tasks.value} showModal={showModal} updateTasks={null} />
+        <TaskList tasks={state.tasks.value} showModal={showModal} updateTasks={updateTasks} />
         <TextField
           id="restPeriodInSeconds"
           name="restPeriodInSeconds"
@@ -167,6 +173,7 @@ const mapStateToProps = ({ activeItem }: ApplicationState) => ({
 
 const mapDispatchToProps = {
   showModal: showModalRequest,
+  updateTasks: updateTasksRequest,
   saveWorkoutProgress: saveWorkoutProgressRequest,
 };
 

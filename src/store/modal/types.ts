@@ -3,12 +3,13 @@ import { Task, Workout } from "Store/types";
 
 export enum ActionType {
   ADD = "add",
-  UPDATE = "update"
+  UPDATE = "update",
 }
 export interface SetEditingDialogProps {
   action: ActionType;
   task: Task;
   index?: number;
+  updateOnServer: boolean;
 }
 
 export interface WorkoutTitleEditingDialogProps {
@@ -26,7 +27,7 @@ export interface ModalState {
 export enum ModalActionType {
   MODAL_HIDDEN = "@@modal/MODAL_HIDDEN",
   MODAL_SHOWN = "@@modal/MODAL_SHOWN",
-  MODAL_RESULT_PROVIDED = "@@modal/MODAL_RESULT_PROVIDED"
+  MODAL_RESULT_PROVIDED = "@@modal/MODAL_RESULT_PROVIDED",
 }
 
 export interface ModalShownAction extends Action {

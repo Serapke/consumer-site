@@ -18,19 +18,28 @@ export const updateWorkoutRequest = (workout: Workout): AppThunk => async (dispa
   dispatch(updateActiveWorkout(updatedWorkout));
 };
 
-export const updateTasksRequest = (tasks: Task[]): AppThunk => async (dispatch, getState) => {
+export const updateTasksRequest = (tasks: Task[], options: any): AppThunk => (dispatch, getState) => {
   const workout = getState().activeItem.workout;
   const newWorkout = { ...workout, tasks };
-  updateWorkout(newWorkout);
+
+  if (options.updateOnServer) {
+    updateWorkout(newWorkout);
+  }
+
   dispatch(updateActiveWorkout(newWorkout));
 };
 
-export const updateTaskRequest = (task: Task): AppThunk => async (dispatch, getState) => {
+export const updateTaskRequest = (task: Task, options: any): AppThunk => async (dispatch, getState) => {
   const workout = getState().activeItem.workout;
-  const updatedWorkout = await updateWorkout({
+  let updatedWorkout = {
     ...workout,
     tasks: updateIdentifiableObjectInArray(workout.tasks, task),
-  });
+  };
+
+  if (options.updateOnServer) {
+    updatedWorkout = await updateWorkout(updatedWorkout);
+  }
+
   dispatch(updateActiveWorkout(updatedWorkout));
 };
 

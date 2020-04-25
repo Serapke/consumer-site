@@ -54,7 +54,7 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ workout, match, fetchW
           <Add fontSize="large" />
         </LinkButton>
       </div>
-      <TaskList tasks={workout.tasks} showModal={showModal} updateTasks={updateTasks} />
+      <TaskList tasks={workout.tasks} showModal={showModal} updateTasks={updateTasks} updateOnServer />
     </div>
   );
 };
