@@ -1,10 +1,10 @@
 import Frontdoor from "Pages/frontdoor";
 import FavoritesPage from "Pages/favorites";
-import WorkoutPage from "Pages/workout/workout-page";
 import RootPage from "Pages/root";
 import WorkoutCreatePage from "Pages/workout/workout-create-page";
-import ExerciseSelectPage from "Pages/exercise/exercise-select-page";
+import WorkoutEditPage from "Pages/workout/workout-edit-page";
 import ExerciseCreatePage from "Pages/exercise/exercise-create-page";
+import ExerciseSelectPage from "Pages/exercise/exercise-select-page";
 
 export default [
   {
@@ -24,7 +24,7 @@ export default [
         path: "/workout/create",
       },
       {
-        component: WorkoutPage,
+        component: WorkoutEditPage,
         path: "/workout/:id",
       },
       {

@@ -11,10 +11,12 @@ import routes from "./routes";
 import "Styleguide/global.scss";
 import { ThemeProvider } from "@material-ui/core";
 import theme from "./styleguide/theme";
+import { emptyWorkoutFormState } from "Store/form/utils";
 
 const initialState: ApplicationState = {
   content: { routines: [], workouts: [], exercises: [], bodyParts: [] },
   activeItem: { routine: null, workout: null },
+  form: { workout: emptyWorkoutFormState },
   modal: { type: null, props: null, result: null },
 };
 

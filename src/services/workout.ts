@@ -22,7 +22,7 @@ export const createWorkout: (workout: Workout) => Promise<ApiResponse> = async (
   return response.json();
 };
 
-export const updateWorkout: (workout: Workout) => Promise<Workout> = async (workout) => {
+export const updateWorkout: (workout: Workout) => Promise<ApiResponse> = async (workout) => {
   const response = await fetch("http://localhost:8080/workout/update", {
     method: "PUT",
     headers: {

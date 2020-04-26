@@ -2,23 +2,28 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@material-ui/core";
 import { CommonDialogActions } from "Components/modal/types";
-import { updateWorkoutRequest } from "Store/active-item/thunks";
-import { WorkoutTitleEditingDialogProps } from "Store/modal/types";
+import { updateWorkoutFormRequest } from "Store/form/thunks";
+import { ApplicationState } from "Store/index";
 
-type OwnProps = CommonDialogActions &
-  WorkoutTitleEditingDialogProps & {
-    updateWorkout: typeof updateWorkoutRequest;
-  };
+interface PropsFromState {
+  title: string;
+}
 
-const SetEditingDialog = ({ workout, hide, updateWorkout }: OwnProps) => {
-  const [workoutTitle, setWorkoutTitle] = React.useState<string>();
+interface PropsFromDispatch {
+  updateForm: typeof updateWorkoutFormRequest;
+}
+
+type OwnProps = CommonDialogActions & PropsFromState & PropsFromDispatch;
+
+const WorkoutTitleEditingDialog = ({ title, hide, updateForm }: OwnProps) => {
+  const [newTitle, setNewTitle] = React.useState<string>(title);
 
   const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWorkoutTitle(e.target.value);
+    setNewTitle(e.target.value);
   };
 
   const handleConfirm = () => {
-    updateWorkout({ ...workout, title: workoutTitle });
+    updateForm({ name: "title", state: { value: newTitle, error: "" } });
     hide();
   };
 
@@ -26,7 +31,7 @@ const SetEditingDialog = ({ workout, hide, updateWorkout }: OwnProps) => {
     <Dialog open={true} fullWidth={true}>
       <DialogTitle>Edit workout title</DialogTitle>
       <DialogContent>
-        <TextField autoFocus margin="dense" label="Title" defaultValue={workout.title} onChange={onValueChange} />
+        <TextField autoFocus margin="dense" label="Title" value={newTitle} onChange={onValueChange} />
       </DialogContent>
       <DialogActions>
         <Button onClick={hide} color="primary">
@@ -40,8 +45,12 @@ const SetEditingDialog = ({ workout, hide, updateWorkout }: OwnProps) => {
   );
 };
 
+const mapStateToProps = ({ form }: ApplicationState) => ({
+  title: form.workout.title.value,
+});
+
 const mapDispatchToProps = {
-  updateWorkout: updateWorkoutRequest
+  updateForm: updateWorkoutFormRequest,
 };
 
-export default connect(null, mapDispatchToProps)(SetEditingDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkoutTitleEditingDialog);

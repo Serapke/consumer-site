@@ -78,7 +78,7 @@ const SliderSection: React.FunctionComponent<SliderProps> = ({ title, addHref, a
     <div className={Styles.container}>
       <div className={Styles.header}>
         <h2>{title}</h2>
-        <Button color="secondary" component={Link} to={addHref}>
+        <Button color="secondary" component={Link} to={{ pathname: addHref, state: { new: true } }}>
           {addTitle}
         </Button>
       </div>

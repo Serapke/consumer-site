@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { StaticContext } from "react-router";
 import {
   Input,
   makeStyles,
@@ -22,7 +23,12 @@ import * as Styles from "./exercise-select-page.scss";
 import { capitalizeWord } from "Utils/text-utils";
 import { removeItem } from "Utils/immutable";
 import EmptyState from "Components/empty-state";
-import { saveWorkoutTasksRequest } from "Store/active-item/thunks";
+import { addExercisesToWorkoutRequest } from "Store/form/thunks";
+
+interface LocationState {
+  new: boolean;
+  from?: Location;
+}
 
 interface PropsFromState {
   bodyParts: BodyPart[];
@@ -32,10 +38,10 @@ interface PropsFromState {
 interface PropsFromDispatch {
   fetchBodyParts: typeof fetchBodyPartsRequest;
   fetchExercises: typeof fetchExercisesRequest;
-  saveWorkoutTasks: typeof saveWorkoutTasksRequest;
+  saveWorkoutTasks: typeof addExercisesToWorkoutRequest;
 }
 
-type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
+type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps<{}, StaticContext, LocationState>;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,6 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const ExerciseSelectPage = ({
   bodyParts,
   exercises,
+  location,
   history,
   fetchBodyParts,
   fetchExercises,
@@ -112,7 +119,7 @@ const ExerciseSelectPage = ({
 
   const onSelect = () => {
     saveWorkoutTasks(selectedItems);
-    history.goBack();
+    history.push(location.state.from.pathname, { new: false });
   };
 
   return (
@@ -181,7 +188,7 @@ const mapStateToProps = ({ content }: ApplicationState) => ({
 const mapDispatchToProps = {
   fetchBodyParts: fetchBodyPartsRequest,
   fetchExercises: fetchExercisesRequest,
-  saveWorkoutTasks: saveWorkoutTasksRequest,
+  saveWorkoutTasks: addExercisesToWorkoutRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseSelectPage);

@@ -9,18 +9,13 @@ export interface SetEditingDialogProps {
   action: ActionType;
   task: Task;
   index?: number;
-  updateOnServer: boolean;
 }
 
-export interface WorkoutTitleEditingDialogProps {
-  workout: Workout;
-}
-
-export type DialogStateProps = SetEditingDialogProps | WorkoutTitleEditingDialogProps;
+export type DialogStateProps = SetEditingDialogProps;
 
 export interface ModalState {
   type: string;
-  props: DialogStateProps;
+  props?: DialogStateProps;
   result?: any;
 }
 

@@ -1,23 +1,21 @@
 import * as React from "react";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { Task } from "Store/types";
 import TaskItem from "Components/task-item";
 import { ModalType } from "Components/modal/modal";
 import { showModalRequest } from "Store/modal/thunks";
 import { ActionType } from "Store/modal/types";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { reorder } from "Utils/immutable";
-import { updateTasksRequest } from "Store/active-item/thunks";
-import { makeStyles, createStyles, Theme } from "@material-ui/core";
 import EmptyState from "Components/empty-state";
+import { updateTasksRequest } from "Store/form/thunks";
 
 interface OwnProps {
   tasks: Task[];
-  updateOnServer?: boolean;
   showModal: typeof showModalRequest;
   updateTasks: typeof updateTasksRequest;
 }
 
-const TaskList = ({ tasks, updateOnServer, showModal, updateTasks }: OwnProps) => {
+const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
   const [activeTask, setActiveTask] = React.useState<number | false>(false);
 
   if (!tasks || !tasks.length) {
@@ -38,7 +36,6 @@ const TaskList = ({ tasks, updateOnServer, showModal, updateTasks }: OwnProps) =
       props: {
         task: tasks.find((t) => t.id === activeTask),
         action: ActionType.UPDATE,
-        updateOnServer,
         index,
       },
     });
@@ -50,7 +47,6 @@ const TaskList = ({ tasks, updateOnServer, showModal, updateTasks }: OwnProps) =
       props: {
         task: tasks.find((t) => t.id === activeTask),
         action: ActionType.ADD,
-        updateOnServer,
       },
     });
   };
@@ -67,7 +63,7 @@ const TaskList = ({ tasks, updateOnServer, showModal, updateTasks }: OwnProps) =
     }
 
     const reorderedTasks = reorder(tasks, source.index, destination.index);
-    updateTasks(reorderedTasks, { updateOnServer });
+    updateTasks(reorderedTasks);
   };
 
   return (

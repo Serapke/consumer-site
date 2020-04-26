@@ -1,33 +1,41 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { StaticContext } from "react-router";
 import { showModalRequest } from "Store/modal/thunks";
-import { TextField, makeStyles, createStyles, Theme, Button, InputAdornment, Grid } from "@material-ui/core";
+import { TextField, makeStyles, createStyles, Theme, Button, InputAdornment, Grid, Snackbar } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
 import { ApplicationState } from "Store/index";
-import { Workout } from "Store/types";
-import { saveWorkoutProgressRequest, updateTasksRequest } from "Store/active-item/thunks";
 import { createWorkout } from "Services/workout";
+import { WorkoutFormState } from "Store/form/types";
+import { updateWorkoutFormRequest, updateTasksRequest, clearWorkoutFormRequest } from "Store/form/thunks";
+import { formToWorkout } from "Store/form/utils";
+import { Alert } from "@material-ui/lab";
+
+interface LocationState {
+  new: boolean;
+}
 
 interface PropsFromState {
-  workout: Workout;
+  form: WorkoutFormState;
 }
 
 interface PropsFromDispatch {
   showModal: typeof showModalRequest;
   updateTasks: typeof updateTasksRequest;
-  saveWorkoutProgress: typeof saveWorkoutProgressRequest;
+  updateForm: typeof updateWorkoutFormRequest;
+  clearForm: typeof clearWorkoutFormRequest;
 }
 
-type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps;
+type OwnProps = PropsFromState & PropsFromDispatch & RouteComponentProps<{}, StaticContext, LocationState>;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       display: "flex",
       flexDirection: "column",
-      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px)`,
+      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px - 56px)`,
     },
     grid: {
       height: "100%",
@@ -36,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2, 0),
       width: "100%",
     },
-    fab: {
+    cta: {
       position: "absolute",
       bottom: theme.spacing(2),
       left: "50%",
@@ -49,132 +57,113 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface FieldState {
-  value: any;
-  errorMessage: string;
-}
-
-interface WorkoutState {
-  title: FieldState;
-  restPeriodInSeconds: FieldState;
-  tasks: FieldState;
-}
-
-const emptyState: WorkoutState = {
-  title: { value: "", errorMessage: null },
-  restPeriodInSeconds: { value: "", errorMessage: null },
-  tasks: { value: [], errorMessage: null },
+const validate = (form: WorkoutFormState) => {
+  if (!form.tasks.value.length) {
+    return false;
+  }
+  return true;
 };
 
-const stateFromWorkout = (workout: Workout): WorkoutState => {
-  const state =
-    workout && !workout.id
-      ? {
-          title: { value: workout.title, errorMessage: null },
-          restPeriodInSeconds: { value: workout.restPeriodInSeconds, errorMessage: null },
-          tasks: { value: workout.tasks, errorMessage: null },
-        }
-      : emptyState;
-  return state;
-};
-
-const stateToWorkout = (state: WorkoutState): Workout => ({
-  id: null,
-  title: state.title.value,
-  restPeriodInSeconds: state.restPeriodInSeconds.value,
-  tasks: state.tasks.value,
-});
-
-const removeTaskIDs = ({ id, title, restPeriodInSeconds, tasks }: Workout): Workout => ({
-  id,
-  title,
-  restPeriodInSeconds,
-  tasks: tasks.map((task) => ({ ...task, id: null })),
-});
-
-const WorkoutCreatePage = ({ workout, history, showModal, updateTasks, saveWorkoutProgress }: OwnProps) => {
+const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, updateForm, clearForm }: OwnProps) => {
   const classes = useStyles();
-  const [state, setState] = React.useState<WorkoutState>(stateFromWorkout(workout));
+  const [error, setError] = React.useState<string>();
 
-  React.useEffect(() => setState(stateFromWorkout(workout)), [workout]);
-
-  const changeStateField = (field: keyof WorkoutState, value: { value?: any; errorMessage: string }) => {
-    setState((prevState) => ({ ...prevState, [field]: { ...prevState[field], ...value } }));
-  };
+  React.useEffect(() => {
+    if (location.state && location.state.new) {
+      clearForm();
+    }
+  }, []);
 
   const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    changeStateField(event.target.id as keyof WorkoutState, {
-      value: event.target.value,
-      errorMessage: "",
-    });
+    const name = event.target.id as keyof WorkoutFormState;
+    const state = { value: event.target.value, error: "" };
+    updateForm({ name, state });
   };
 
-  const onAddClick = () => {
-    saveWorkoutProgress(stateToWorkout(state));
-  };
-
-  const onSaveClick = () => {
-    const workout = stateToWorkout(state);
-    createWorkout(removeTaskIDs(workout)).then((res) => {
+  const handleSubmit = () => {
+    event.preventDefault();
+    if (!validate(form)) {
+      setError("Come on! Add at least one exercise...");
+      return;
+    }
+    const workout = formToWorkout(form);
+    createWorkout(workout).then((res) => {
       if (res.errors) {
-        console.log(res.errors);
+        Object.keys(res.errors).forEach((name) => {
+          const _name = name as keyof WorkoutFormState;
+          updateForm({ name: _name, state: { value: form[_name].value, error: res.errors[name] } });
+        });
       } else {
-        history.goBack();
+        clearForm();
+        history.push("/favorites");
       }
     });
   };
 
   return (
-    <div className={classes.container}>
-      <TextField
-        id="title"
-        name="title"
-        label="Title"
-        color="secondary"
-        value={state.title.value}
-        onChange={onTextFieldChange}
-        fullWidth
-      />
-      <Button
-        className={classes.button}
-        size="large"
-        color="secondary"
-        variant="contained"
-        component={Link}
-        to="/exercise/select"
-        onClick={onAddClick}
-      >
-        <Add fontSize="large" />
-      </Button>
-      <Grid className={classes.grid} direction="column" justify="space-between" container>
-        <TaskList tasks={state.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+    <div>
+      <form className={classes.container} onSubmit={handleSubmit}>
         <TextField
-          id="restPeriodInSeconds"
-          name="restPeriodInSeconds"
-          label="Rest between sets"
+          id="title"
+          name="title"
+          label="Title"
           color="secondary"
-          type="number"
-          value={state.restPeriodInSeconds.value}
-          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          value={form.title.value}
+          error={!!form.title.error}
+          helperText={form.title.error}
           onChange={onTextFieldChange}
           fullWidth
+          required
         />
-      </Grid>
-      <Button className={classes.fab} color="secondary" variant="contained" onClick={onSaveClick}>
-        Save
-      </Button>
+        <Button
+          className={classes.button}
+          size="large"
+          color="secondary"
+          variant="contained"
+          component={Link}
+          to={{ pathname: "/exercise/select", state: { from: location } }}
+        >
+          <Add fontSize="large" />
+        </Button>
+        <Grid className={classes.grid} direction="column" justify="space-between" container>
+          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+          <TextField
+            id="restPeriodInSeconds"
+            name="restPeriodInSeconds"
+            label="Rest between sets"
+            color="secondary"
+            type="number"
+            value={form.restPeriodInSeconds.value}
+            error={!!form.restPeriodInSeconds.error}
+            helperText={form.restPeriodInSeconds.error}
+            InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+            onChange={onTextFieldChange}
+            fullWidth
+            required
+          />
+        </Grid>
+        <Button className={classes.cta} color="secondary" variant="contained" type="submit">
+          Create
+        </Button>
+      </form>
+      <Snackbar open={!!error} autoHideDuration={5000} onClose={() => setError(null)}>
+        <Alert onClose={() => setError(null)} severity="error">
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
-const mapStateToProps = ({ activeItem }: ApplicationState) => ({
-  workout: activeItem.workout,
+const mapStateToProps = ({ form }: ApplicationState) => ({
+  form: form.workout,
 });
 
 const mapDispatchToProps = {
   showModal: showModalRequest,
   updateTasks: updateTasksRequest,
-  saveWorkoutProgress: saveWorkoutProgressRequest,
+  updateForm: updateWorkoutFormRequest,
+  clearForm: clearWorkoutFormRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WorkoutCreatePage);
