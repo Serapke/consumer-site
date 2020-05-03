@@ -46,7 +46,7 @@ const WorkoutTitleEditingDialog = ({ title, hide, updateForm }: OwnProps) => {
 };
 
 const mapStateToProps = ({ form }: ApplicationState) => ({
-  title: form.workout.title.value,
+  title: form.workout.form.title.value,
 });
 
 const mapDispatchToProps = {

@@ -8,7 +8,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
 import { ApplicationState } from "Store/index";
 import { createWorkout } from "Services/workout";
-import { WorkoutFormState } from "Store/form/types";
+import { WorkoutFormState, WorkoutForm } from "Store/form/types";
 import { updateWorkoutFormRequest, updateTasksRequest, clearWorkoutFormRequest } from "Store/form/thunks";
 import { formToWorkout } from "Store/form/utils";
 import { Alert } from "@material-ui/lab";
@@ -18,7 +18,7 @@ interface LocationState {
 }
 
 interface PropsFromState {
-  form: WorkoutFormState;
+  form: WorkoutForm;
 }
 
 interface PropsFromDispatch {
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const validate = (form: WorkoutFormState) => {
+const validate = (form: WorkoutForm) => {
   if (!form.tasks.value.length) {
     return false;
   }
@@ -80,7 +80,7 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
   }, []);
 
   const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.id as keyof WorkoutFormState;
+    const name = event.target.id as keyof WorkoutForm;
     const state = { value: event.target.value, error: "" };
     updateForm({ name, state });
   };
@@ -95,7 +95,7 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
     createWorkout(workout).then((res) => {
       if (res.errors) {
         Object.keys(res.errors).forEach((name) => {
-          const _name = name as keyof WorkoutFormState;
+          const _name = name as keyof WorkoutForm;
           updateForm({ name: _name, state: { value: form[_name].value, error: res.errors[name] } });
         });
       } else {
@@ -161,7 +161,7 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
 };
 
 const mapStateToProps = ({ form }: ApplicationState) => ({
-  form: form.workout,
+  form: form.workout.form,
 });
 
 const mapDispatchToProps = {

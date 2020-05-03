@@ -17,7 +17,10 @@ const reducer: Reducer<FormState> = (state: FormState = initialState, action: Fo
         ...state,
         workout: {
           ...state.workout,
-          [action.field.name]: { ...action.field.state },
+          form: {
+            ...state.workout.form,
+            [action.field.name]: { ...action.field.state },
+          },
         },
       };
     default:

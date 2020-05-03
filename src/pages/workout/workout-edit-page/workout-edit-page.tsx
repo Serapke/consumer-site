@@ -23,7 +23,7 @@ import {
   fetchWorkoutRequest,
   clearWorkoutFormRequest,
 } from "Store/form/thunks";
-import { WorkoutFormState } from "Store/form/types";
+import { WorkoutForm } from "Store/form/types";
 import { formToWorkout } from "Store/form/utils";
 import { updateWorkout } from "Services/workout";
 
@@ -32,7 +32,8 @@ interface RouteParams {
 }
 
 interface PropsFromState {
-  form: WorkoutFormState;
+  form: WorkoutForm;
+  id: number;
 }
 
 interface PropsFromDispatch {
@@ -73,7 +74,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
+  id,
   form,
+  location,
   history,
   match,
   fetchWorkout,
@@ -84,8 +87,15 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
 }) => {
   const classes = useStyles();
   React.useEffect(() => {
-    fetchWorkout(match.params.id);
+    console.log(id, parseInt(match.params.id));
+    if (id !== parseInt(match.params.id)) {
+      fetchWorkout(match.params.id);
+    }
   }, [match.params.id]);
+
+  if (form && form.tasks) {
+    console.log(form);
+  }
 
   if (!form) return <div>Loading...</div>;
 
@@ -94,20 +104,19 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
   };
 
   const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.id as keyof WorkoutFormState;
+    const name = event.target.id as keyof WorkoutForm;
     const state = { value: event.target.value, error: "" };
     updateForm({ name, state });
   };
 
   const onSaveClick = () => {
-    const workout = formToWorkout(form);
-    workout.id = parseInt(match.params.id);
+    const workout = formToWorkout(form, id);
     updateWorkout(workout).then((res) => {
       if (res.errors) {
         console.log(res.errors);
       } else {
         clearForm();
-        history.goBack();
+        history.push("/favorites");
       }
     });
   };
@@ -123,7 +132,7 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
         color="secondary"
         variant="contained"
         component={Link}
-        to="/exercise/select"
+        to={{ pathname: "/exercise/select", state: { from: location } }}
       >
         <Add fontSize="large" />
       </Button>
@@ -149,7 +158,8 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
 };
 
 const mapStateToProps = ({ form }: ApplicationState) => ({
-  form: form.workout,
+  form: form.workout.form,
+  id: form.workout.id,
 });
 
 const mapDispatchToProps = {

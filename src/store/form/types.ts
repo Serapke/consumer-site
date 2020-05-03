@@ -4,10 +4,15 @@ export interface FormState {
   workout: WorkoutFormState;
 }
 
-export interface WorkoutFormState {
+export interface WorkoutForm {
   title: FieldState;
   tasks: FieldState;
   restPeriodInSeconds: FieldState;
+}
+
+export interface WorkoutFormState {
+  id?: number;
+  form: WorkoutForm;
 }
 
 export interface FieldState {
@@ -16,7 +21,7 @@ export interface FieldState {
 }
 
 export interface Field {
-  name: keyof WorkoutFormState;
+  name: keyof WorkoutForm;
   state: FieldState;
 }
 
