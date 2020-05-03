@@ -19,7 +19,6 @@ import { fetchBodyPartsRequest, fetchExercisesRequest } from "Store/content/thun
 import { ApplicationState } from "Store/index";
 import { Exercise, BodyPart } from "Store/types";
 import ExerciseItem from "Components/exercise";
-import * as Styles from "./exercise-select-page.scss";
 import { capitalizeWord } from "Utils/text-utils";
 import { removeItem } from "Utils/immutable";
 import EmptyState from "Components/empty-state";
@@ -49,6 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "space-between",
     },
+    chips: {
+      marginTop: "5px",
+    },
     fab: {
       position: "absolute",
       bottom: theme.spacing(2),
@@ -60,6 +62,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: {
       margin: theme.spacing(1),
+    },
+    list: {
+      maxHeight: "350px",
+      overflow: "scroll",
     },
     button: {
       marginTop: theme.spacing(2),
@@ -146,7 +152,7 @@ const ExerciseSelectPage = ({
           }
         />
       </FormControl>
-      <div className={Styles.chipContainer}>
+      <div className={classes.chips}>
         {bodyParts.map((bodyPart) => (
           <Chip
             color={isSelectedBodyPart(bodyPart) ? "secondary" : "default"}
@@ -159,7 +165,7 @@ const ExerciseSelectPage = ({
           />
         ))}
       </div>
-      <List>
+      <List className={classes.list}>
         {filteredExercises.length ? (
           filteredExercises.map((exercise, index) => (
             <ExerciseItem
