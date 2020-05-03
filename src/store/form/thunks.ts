@@ -25,8 +25,10 @@ export const updateWorkoutFormRequest = (field: Field): AppThunk => (dispatch) =
 
 export const addExercisesToWorkoutRequest = (exerciseIDs: string[]): AppThunk => async (dispatch, getState) => {
   const state = getState();
-  const tasks = exerciseIDs.map((exerciseID, index) => mapExerciseIDToTask(exerciseID, index, state));
-  dispatch(updateWorkoutForm({ name: "tasks", state: { value: [...state.form.workout.tasks.value, ...tasks] } }));
+  const newTasks = exerciseIDs.map((exerciseID) => mapExerciseIDToTask(exerciseID, state));
+  const oldTasks = state.form.workout.tasks.value;
+  const tasks = [...oldTasks, ...newTasks].map(reindexTasks);
+  dispatch(updateWorkoutForm({ name: "tasks", state: { value: tasks } }));
 };
 
 export const updateTasksRequest = (tasks: Task[]): AppThunk => (dispatch) => {
@@ -45,7 +47,11 @@ const workoutToForm = (workout: Workout): WorkoutFormState => ({
   tasks: { value: workout.tasks },
 });
 
-const mapExerciseIDToTask = (exerciseID: string, index: number, state: ApplicationState): Task => {
+const mapExerciseIDToTask = (exerciseID: string, state: ApplicationState): Task => {
   const exercise = state.content.exercises.find((exercise) => exercise.id === exerciseID);
-  return { id: index, exercise: exercise, sets: [exercise.defaultReps] };
+  return { id: null, exercise: exercise, sets: [exercise.defaultReps] };
+};
+
+const reindexTasks = (task: Task, index: number) => {
+  return { ...task, id: index };
 };

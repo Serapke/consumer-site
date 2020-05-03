@@ -67,28 +67,26 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
   };
 
   return (
-    <div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="list">
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {tasks.map((task, index) => (
-                <TaskItem
-                  index={index}
-                  task={task}
-                  key={task.id + "_" + index}
-                  expanded={activeTask === task.id}
-                  onChange={onTaskClick(task.id)}
-                  onSetClick={onSetClick}
-                  onAddSetClick={onAddSetClick}
-                />
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="list">
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            {tasks.map((task, index) => (
+              <TaskItem
+                index={index}
+                task={task}
+                key={task.id + "_" + index}
+                expanded={activeTask === task.id}
+                onChange={onTaskClick(task.id)}
+                onSetClick={onSetClick}
+                onAddSetClick={onAddSetClick}
+              />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 };
 

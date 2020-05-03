@@ -40,6 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
     grid: {
       height: "100%",
     },
+    tasks: {
+      minHeight: `calc(100% - 48px - 48px - 51px)`,
+      overflow: "scroll",
+      width: "100%",
+    },
     button: {
       margin: theme.spacing(2, 0),
       width: "100%",
@@ -125,23 +130,23 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
         >
           <Add fontSize="large" />
         </Button>
-        <Grid className={classes.grid} direction="column" justify="space-between" container>
+        <div className={classes.tasks}>
           <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
-          <TextField
-            id="restPeriodInSeconds"
-            name="restPeriodInSeconds"
-            label="Rest between sets"
-            color="secondary"
-            type="number"
-            value={form.restPeriodInSeconds.value}
-            error={!!form.restPeriodInSeconds.error}
-            helperText={form.restPeriodInSeconds.error}
-            InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
-            onChange={onTextFieldChange}
-            fullWidth
-            required
-          />
-        </Grid>
+        </div>
+        <TextField
+          id="restPeriodInSeconds"
+          name="restPeriodInSeconds"
+          label="Rest between sets"
+          color="secondary"
+          type="number"
+          value={form.restPeriodInSeconds.value}
+          error={!!form.restPeriodInSeconds.error}
+          helperText={form.restPeriodInSeconds.error}
+          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          onChange={onTextFieldChange}
+          fullWidth
+          required
+        />
         <Button className={classes.cta} color="secondary" variant="contained" type="submit">
           Create
         </Button>
