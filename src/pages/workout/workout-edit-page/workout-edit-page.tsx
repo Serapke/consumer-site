@@ -51,13 +51,16 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       flexDirection: "column",
-      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px)`,
+      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px - 56px)`,
     },
     title: {
       marginBottom: "10px",
     },
-    grid: {
-      height: "100%",
+    tasks: {
+      minHeight: `calc(100% - 48px - 48px - 51px)`,
+      overflow: "scroll",
+      width: "100%",
+      marginBottom: theme.spacing(1),
     },
     button: {
       margin: theme.spacing(2, 0),
@@ -109,7 +112,8 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
     updateForm({ name, state });
   };
 
-  const onSaveClick = () => {
+  const handleSubmit = () => {
+    event.preventDefault();
     const workout = formToWorkout(form, id);
     updateWorkout(workout).then((res) => {
       if (res.errors) {
@@ -122,22 +126,24 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
   };
 
   return (
-    <div className={classes.container}>
-      <Typography variant="h4" onClick={onTitleClick}>
-        {form.title.value}
-      </Typography>
-      <Button
-        className={classes.button}
-        size="large"
-        color="secondary"
-        variant="contained"
-        component={Link}
-        to={{ pathname: "/exercise/select", state: { from: location } }}
-      >
-        <Add fontSize="large" />
-      </Button>
-      <Grid className={classes.grid} direction="column" justify="space-between" container>
-        <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+    <div>
+      <form className={classes.container} onSubmit={handleSubmit}>
+        <Typography variant="h4" onClick={onTitleClick}>
+          {form.title.value}
+        </Typography>
+        <Button
+          className={classes.button}
+          size="large"
+          color="secondary"
+          variant="contained"
+          component={Link}
+          to={{ pathname: "/exercise/select", state: { from: location } }}
+        >
+          <Add fontSize="large" />
+        </Button>
+        <div className={classes.tasks}>
+          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+        </div>
         <TextField
           id="restPeriodInSeconds"
           name="restPeriodInSeconds"
@@ -149,10 +155,10 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
           onChange={onTextFieldChange}
           fullWidth
         />
-      </Grid>
-      <Button className={classes.cta} color="secondary" variant="contained" onClick={onSaveClick}>
-        Save
-      </Button>
+        <Button className={classes.cta} color="secondary" variant="contained" type="submit">
+          Save
+        </Button>
+      </form>
     </div>
   );
 };

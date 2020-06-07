@@ -8,7 +8,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
 import { ApplicationState } from "Store/index";
 import { createWorkout } from "Services/workout";
-import { WorkoutFormState, WorkoutForm } from "Store/form/types";
+import { WorkoutForm } from "Store/form/types";
 import { updateWorkoutFormRequest, updateTasksRequest, clearWorkoutFormRequest } from "Store/form/thunks";
 import { formToWorkout } from "Store/form/utils";
 import { Alert } from "@material-ui/lab";
