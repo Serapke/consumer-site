@@ -2,17 +2,19 @@ import { Workout } from "Store/types";
 import { ApiResponse } from "./types";
 
 export const getAllWorkouts: () => Promise<Workout[]> = async () => {
-  const response = await fetch("http://localhost:8080/workout");
+  const response = await fetch(`${process.env.API_URL}/workout`);
   return response.json();
 };
 
 export const getWorkout: (id: string) => Promise<Workout> = async (id) => {
-  const response = await fetch(`http://localhost:8080/workout/${id}`);
+  const response = await fetch(`${process.env.API_URL}/workout/${id}`);
   return response.json();
 };
 
-export const createWorkout: (workout: Workout) => Promise<ApiResponse> = async (workout) => {
-  const response = await fetch("http://localhost:8080/workout/create", {
+export const createWorkout: (workout: Workout) => Promise<ApiResponse> = async (
+  workout
+) => {
+  const response = await fetch(`${process.env.API_URL}/workout/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,8 +24,10 @@ export const createWorkout: (workout: Workout) => Promise<ApiResponse> = async (
   return response.json();
 };
 
-export const updateWorkout: (workout: Workout) => Promise<ApiResponse> = async (workout) => {
-  const response = await fetch("http://localhost:8080/workout/update", {
+export const updateWorkout: (workout: Workout) => Promise<ApiResponse> = async (
+  workout
+) => {
+  const response = await fetch(`${process.env.API_URL}/workout/update`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

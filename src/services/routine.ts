@@ -1,6 +1,6 @@
 import { Routine } from "Store/types";
 
 export const getAllRoutines: () => Promise<Routine[]> = async () => {
-  const response = await fetch("http://localhost:8080/routine");
+  const response = await fetch(`${process.env.API_URL}/routine`);
   return response.json();
 };
