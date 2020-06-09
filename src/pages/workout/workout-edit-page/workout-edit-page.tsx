@@ -1,28 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { RouteComponentProps, Link, Prompt } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 import { Add } from "@material-ui/icons";
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Button,
-  Grid,
-  TextField,
-  InputAdornment,
-  Typography,
-} from "@material-ui/core";
+import { makeStyles, Theme, createStyles, Button, TextField, InputAdornment, Typography } from "@material-ui/core";
 
 import { ApplicationState } from "Store/index";
 import { showModalRequest } from "Store/modal/thunks";
 import TaskList from "Components/task-list";
 import { ModalType } from "Components/modal/modal";
-import {
-  updateTasksRequest,
-  updateWorkoutFormRequest,
-  fetchWorkoutRequest,
-  clearWorkoutFormRequest,
-} from "Store/form/thunks";
+import { updateTasksRequest, updateWorkoutFormRequest, fetchWorkoutRequest, clearWorkoutFormRequest } from "Store/form/thunks";
 import { WorkoutForm } from "Store/form/types";
 import { formToWorkout } from "Store/form/utils";
 import { updateWorkout } from "Services/workout";
@@ -90,15 +76,10 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
 }) => {
   const classes = useStyles();
   React.useEffect(() => {
-    console.log(id, parseInt(match.params.id));
     if (id !== parseInt(match.params.id)) {
       fetchWorkout(match.params.id);
     }
   }, [match.params.id]);
-
-  if (form && form.tasks) {
-    console.log(form);
-  }
 
   if (!form) return <div>Loading...</div>;
 
