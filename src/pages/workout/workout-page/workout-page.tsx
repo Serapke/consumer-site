@@ -27,7 +27,7 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ match }) => {
         <Typography variant="h4">{workout.title}</Typography>
         <Box>
           <Button color="secondary" component={Link} to={`/workout/${match.params.id}/edit`}>
-            EDIT EXERCISE
+            EDIT WORKOUT
           </Button>
         </Box>
       </Box>
