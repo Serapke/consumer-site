@@ -5,7 +5,7 @@ import TaskItem from "Components/task-item";
 import { ModalType } from "Components/modal/modal";
 import { showModalRequest } from "Store/modal/thunks";
 import { ActionType } from "Store/modal/types";
-import { reorder } from "Utils/immutable";
+import { reorder, removeItem } from "Utils/immutable";
 import EmptyState from "Components/empty-state";
 import { updateTasksRequest } from "Store/form/thunks";
 
@@ -66,6 +66,11 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
     updateTasks(reorderedTasks);
   };
 
+  const onDelete = (index: number) => {
+    const updatedTasks = removeItem(tasks, { index });
+    updateTasks(updatedTasks);
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="list">
@@ -80,6 +85,7 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
                 onChange={onTaskClick(task.id)}
                 onSetClick={onSetClick}
                 onAddSetClick={onAddSetClick}
+                onDelete={onDelete}
               />
             ))}
             {provided.placeholder}

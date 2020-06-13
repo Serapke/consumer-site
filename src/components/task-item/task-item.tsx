@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Chip, Typography, ExpansionPanelDetails, withStyles } from "@material-ui/core";
+import { Chip, Typography, ExpansionPanelDetails, withStyles, IconButton } from "@material-ui/core";
 import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import { Task } from "Store/types";
@@ -8,6 +8,7 @@ import CircleItem from "Components/circle-item";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable } from "react-beautiful-dnd";
 import { capitalizeWord } from "../../utils/text-utils";
+import { Delete } from "@material-ui/icons";
 
 interface OwnProps {
   index: number;
@@ -16,6 +17,7 @@ interface OwnProps {
   onChange: (event: React.ChangeEvent<{}>, isExpanded: boolean) => void;
   onSetClick: (index: number) => void;
   onAddSetClick: () => void;
+  onDelete: (index: number) => void;
 }
 
 const ExpansionPanel = withStyles({
@@ -54,7 +56,12 @@ const ExpansionPanelSummary = withStyles({
   expanded: {},
 })(MuiExpansionPanelSummary);
 
-const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetClick, onAddSetClick }) => {
+const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetClick, onAddSetClick, onDelete }) => {
+  const onDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onDelete(index);
+  };
+
   return (
     <Draggable draggableId={task.id.toString()} index={index}>
       {(provided) => (
@@ -66,11 +73,20 @@ const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetCl
           {...provided.dragHandleProps}
         >
           <ExpansionPanelSummary>
-            <Typography component="div">{task.exercise.title}</Typography>
-            <div className={Styles.chipContainer}>
-              {task.exercise.bodyParts.map((bodyPart) => (
-                <Chip key={bodyPart} size="small" label={capitalizeWord(bodyPart)} />
-              ))}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <Typography component="div">{task.exercise.title}</Typography>
+                <div className={Styles.chipContainer}>
+                  {task.exercise.bodyParts.map((bodyPart) => (
+                    <Chip key={bodyPart} size="small" label={capitalizeWord(bodyPart)} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <IconButton aria-label="delete" onClick={onDeleteClick}>
+                  <Delete />
+                </IconButton>
+              </div>
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
