@@ -1,12 +1,7 @@
 import * as React from "react";
-import {
-  Chip,
-  ExpansionPanel,
-  Typography,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  makeStyles,
-} from "@material-ui/core";
+import { Chip, Typography, ExpansionPanelDetails, withStyles } from "@material-ui/core";
+import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
+import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import { Task } from "Store/types";
 import * as Styles from "./task-item.scss";
 import CircleItem from "Components/circle-item";
@@ -23,11 +18,41 @@ interface OwnProps {
   onAddSetClick: () => void;
 }
 
-const useSummaryStyles = makeStyles({
+const ExpansionPanel = withStyles({
+  root: {
+    border: "1px solid rgba(0, 0, 0, .125)",
+    boxShadow: "none",
+    "&:not(:last-child)": {
+      borderBottom: 0,
+    },
+    "&:before": {
+      display: "none",
+    },
+    "&$expanded": {
+      margin: "auto",
+    },
+  },
+  expanded: {},
+})(MuiExpansionPanel);
+
+const ExpansionPanelSummary = withStyles({
+  root: {
+    backgroundColor: "rgba(0, 0, 0, .03)",
+    borderBottom: "1px solid rgba(0, 0, 0, .125)",
+    marginBottom: -1,
+    minHeight: 56,
+    "&$expanded": {
+      minHeight: 56,
+    },
+  },
   content: {
     flexDirection: "column",
+    "&$expanded": {
+      margin: "12px 0",
+    },
   },
-});
+  expanded: {},
+})(MuiExpansionPanelSummary);
 
 const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetClick, onAddSetClick }) => {
   return (
@@ -40,7 +65,7 @@ const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetCl
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <ExpansionPanelSummary classes={useSummaryStyles()}>
+          <ExpansionPanelSummary>
             <Typography component="div">{task.exercise.title}</Typography>
             <div className={Styles.chipContainer}>
               {task.exercise.bodyParts.map((bodyPart) => (

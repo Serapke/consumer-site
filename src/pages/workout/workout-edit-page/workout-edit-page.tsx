@@ -8,7 +8,12 @@ import { ApplicationState } from "Store/index";
 import { showModalRequest } from "Store/modal/thunks";
 import TaskList from "Components/task-list";
 import { ModalType } from "Components/modal/modal";
-import { updateTasksRequest, updateWorkoutFormRequest, fetchWorkoutRequest, clearWorkoutFormRequest } from "Store/form/thunks";
+import {
+  updateTasksRequest,
+  updateWorkoutFormRequest,
+  fetchWorkoutRequest,
+  clearWorkoutFormRequest,
+} from "Store/form/thunks";
 import { WorkoutForm } from "Store/form/types";
 import { formToWorkout } from "Store/form/utils";
 import { updateWorkout } from "Services/workout";
@@ -37,23 +42,27 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       flexDirection: "column",
-      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px - 56px)`,
     },
     title: {
       marginBottom: "10px",
     },
+    textfield: {
+      margin: theme.spacing(2, 0),
+    },
     tasks: {
-      minHeight: `calc(100% - 48px - 48px - 51px)`,
       overflow: "scroll",
       width: "100%",
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(8),
     },
     button: {
-      margin: theme.spacing(2, 0),
+      position: "sticky",
+      top: theme.spacing(2),
+      zIndex: 1,
+      marginBottom: theme.spacing(2),
       width: "100%",
     },
     cta: {
-      position: "absolute",
+      position: "fixed",
       bottom: theme.spacing(2),
       left: "50%",
       transform: "translateX(-50%)",
@@ -112,6 +121,18 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
         <Typography variant="h4" onClick={onTitleClick}>
           {form.title.value}
         </Typography>
+        <TextField
+          className={classes.textfield}
+          id="restPeriodInSeconds"
+          name="restPeriodInSeconds"
+          label="Rest between sets"
+          color="secondary"
+          type="number"
+          value={form.restPeriodInSeconds.value}
+          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          onChange={onTextFieldChange}
+          fullWidth
+        />
         <Button
           className={classes.button}
           size="large"
@@ -125,17 +146,6 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
         <div className={classes.tasks}>
           <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
         </div>
-        <TextField
-          id="restPeriodInSeconds"
-          name="restPeriodInSeconds"
-          label="Rest between sets"
-          color="secondary"
-          type="number"
-          value={form.restPeriodInSeconds.value}
-          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
-          onChange={onTextFieldChange}
-          fullWidth
-        />
         <Button className={classes.cta} color="secondary" variant="contained" type="submit">
           Save
         </Button>

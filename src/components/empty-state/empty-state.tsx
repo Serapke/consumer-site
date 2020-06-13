@@ -4,13 +4,10 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%,-50%)",
       textAlign: "center",
       color: "#909090",
       lineHeight: "30px",
+      marginTop: theme.spacing(2),
     },
   })
 );

@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StaticContext } from "react-router";
 import { showModalRequest } from "Store/modal/thunks";
-import { TextField, makeStyles, createStyles, Theme, Button, InputAdornment, Grid, Snackbar } from "@material-ui/core";
+import { TextField, makeStyles, createStyles, Theme, Button, InputAdornment, Snackbar } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import { Link, RouteComponentProps } from "react-router-dom";
 import TaskList from "Components/task-list";
@@ -35,29 +35,28 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       flexDirection: "column",
-      height: `calc(100vh - ${theme.spacing(14)}px  - ${theme.mixins.toolbar.minHeight}px - 56px)`,
     },
-    grid: {
-      height: "100%",
+    textfield: {
+      margin: theme.spacing(2, 0),
     },
     tasks: {
-      minHeight: `calc(100% - 48px - 48px - 51px)`,
-      overflow: "scroll",
+      minHeight: theme.spacing(20),
       width: "100%",
+      marginBottom: theme.spacing(8),
     },
     button: {
-      margin: theme.spacing(2, 0),
+      position: "sticky",
+      top: theme.spacing(2),
+      zIndex: 1,
+      marginBottom: theme.spacing(2),
       width: "100%",
     },
     cta: {
-      position: "absolute",
+      position: "fixed",
       bottom: theme.spacing(2),
       left: "50%",
       transform: "translateX(-50%)",
       width: "200px",
-    },
-    label: {
-      margin: theme.spacing(1),
     },
   })
 );
@@ -120,20 +119,8 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
           fullWidth
           required
         />
-        <Button
-          className={classes.button}
-          size="large"
-          color="secondary"
-          variant="contained"
-          component={Link}
-          to={{ pathname: "/exercise/select", state: { from: location } }}
-        >
-          <Add fontSize="large" />
-        </Button>
-        <div className={classes.tasks}>
-          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
-        </div>
         <TextField
+          className={classes.textfield}
           id="restPeriodInSeconds"
           name="restPeriodInSeconds"
           label="Rest between sets"
@@ -147,6 +134,19 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
           fullWidth
           required
         />
+        <Button
+          className={classes.button}
+          size="large"
+          color="secondary"
+          variant="contained"
+          component={Link}
+          to={{ pathname: "/exercise/select", state: { from: location } }}
+        >
+          <Add fontSize="large" />
+        </Button>
+        <div className={classes.tasks}>
+          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+        </div>
         <Button className={classes.cta} color="secondary" variant="contained" type="submit">
           Create
         </Button>
