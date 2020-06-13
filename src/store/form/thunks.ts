@@ -36,8 +36,8 @@ export const updateTasksRequest = (tasks: Task[]): AppThunk => (dispatch) => {
 };
 
 export const updateTaskRequest = (task: Task): AppThunk => async (dispatch, getState) => {
-  const workout = getState().activeItem.workout;
-  const tasks = updateIdentifiableObjectInArray(workout.tasks, task);
+  const workout = getState().form.workout.form;
+  const tasks = updateIdentifiableObjectInArray(workout.tasks.value, task);
   dispatch(updateWorkoutForm({ name: "tasks", state: { value: tasks } }));
 };
 
