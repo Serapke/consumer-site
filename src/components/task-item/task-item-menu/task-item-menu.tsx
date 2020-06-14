@@ -14,7 +14,8 @@ const TaskItemMenu: React.FC<OwnProps> = ({ onDelete }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (event: any) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
 

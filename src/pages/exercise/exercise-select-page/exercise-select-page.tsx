@@ -23,6 +23,7 @@ import { capitalizeWord } from "Utils/text-utils";
 import { removeItem } from "Utils/immutable";
 import EmptyState from "Components/empty-state";
 import { addExercisesToWorkoutRequest } from "Store/form/thunks";
+import { fabKeyboardStyles, onInputFocusHideFab, onInputBlurShowFab } from "Utils/ui-utils";
 
 interface LocationState {
   new: boolean;
@@ -52,12 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "5px",
     },
     fab: {
-      position: "absolute",
+      position: "fixed",
       bottom: theme.spacing(2),
-      marginLeft: "auto",
-      marginRight: "auto",
-      left: 0,
-      right: 0,
+      left: "50%",
+      transform: "translateX(-50%)",
       width: "200px",
     },
     label: {
@@ -87,6 +86,7 @@ const ExerciseSelectPage = ({
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [selectedBodyParts, setSelectedBodyParts] = React.useState<BodyPart[]>([]);
   const classes = useStyles();
+  const fabClass = fabKeyboardStyles();
 
   React.useEffect(() => {
     fetchBodyParts();
@@ -150,6 +150,8 @@ const ExerciseSelectPage = ({
               <Clear style={{ color: "black" }} />
             </IconButton>
           }
+          onFocus={() => onInputFocusHideFab(fabClass.keyboardStyle)}
+          onBlur={() => onInputBlurShowFab(fabClass.keyboardStyle)}
         />
       </FormControl>
       <div className={classes.chips}>
@@ -179,7 +181,7 @@ const ExerciseSelectPage = ({
           <EmptyState primaryText="No exercises matched your search." />
         )}
       </List>
-      <Button className={classes.fab} color="secondary" variant="contained" onClick={onSelect}>
+      <Button id="fab" className={classes.fab} color="secondary" variant="contained" onClick={onSelect}>
         Select
       </Button>
     </div>

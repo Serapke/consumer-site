@@ -17,6 +17,7 @@ import {
 import { WorkoutForm } from "Store/form/types";
 import { formToWorkout } from "Store/form/utils";
 import { updateWorkout } from "Services/workout";
+import { fabKeyboardStyles, onInputFocusHideFab, onInputBlurShowFab } from "Utils/ui-utils";
 
 interface RouteParams {
   id: string;
@@ -84,6 +85,7 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
   clearForm,
 }) => {
   const classes = useStyles();
+  const fabClass = fabKeyboardStyles();
   React.useEffect(() => {
     if (id !== parseInt(match.params.id)) {
       fetchWorkout(match.params.id);
@@ -129,7 +131,11 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
           color="secondary"
           type="number"
           value={form.restPeriodInSeconds.value}
-          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Sec</InputAdornment>,
+            onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+            onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+          }}
           onChange={onTextFieldChange}
           fullWidth
         />
@@ -146,7 +152,7 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
         <div className={classes.tasks}>
           <TaskList tasks={form.tasks.value} editable showModal={showModal} updateTasks={updateTasks} />
         </div>
-        <Button className={classes.cta} color="secondary" variant="contained" type="submit">
+        <Button id="fab" className={classes.cta} color="secondary" variant="contained" type="submit">
           Save
         </Button>
       </form>

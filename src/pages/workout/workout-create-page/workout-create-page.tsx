@@ -12,6 +12,7 @@ import { WorkoutForm } from "Store/form/types";
 import { updateWorkoutFormRequest, updateTasksRequest, clearWorkoutFormRequest } from "Store/form/thunks";
 import { formToWorkout } from "Store/form/utils";
 import { Alert } from "@material-ui/lab";
+import { onInputFocusHideFab, onInputBlurShowFab, fabKeyboardStyles } from "Utils/ui-utils";
 
 interface LocationState {
   new: boolean;
@@ -70,6 +71,7 @@ const validate = (form: WorkoutForm) => {
 
 const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, updateForm, clearForm }: OwnProps) => {
   const classes = useStyles();
+  const fabClass = fabKeyboardStyles();
   const [error, setError] = React.useState<string>();
 
   React.useEffect(() => {
@@ -109,12 +111,16 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
       <form className={classes.container} onSubmit={handleSubmit}>
         <TextField
           id="title"
-          name="title"
+          name="workout-title"
           label="Title"
           color="secondary"
           value={form.title.value}
           error={!!form.title.error}
           helperText={form.title.error}
+          InputProps={{
+            onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+            onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+          }}
           onChange={onTextFieldChange}
           fullWidth
           required
@@ -129,7 +135,11 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
           value={form.restPeriodInSeconds.value}
           error={!!form.restPeriodInSeconds.error}
           helperText={form.restPeriodInSeconds.error}
-          InputProps={{ endAdornment: <InputAdornment position="end">Sec</InputAdornment> }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Sec</InputAdornment>,
+            onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+            onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+          }}
           onChange={onTextFieldChange}
           fullWidth
           required
@@ -145,9 +155,9 @@ const WorkoutCreatePage = ({ form, location, history, showModal, updateTasks, up
           <Add fontSize="large" />
         </Button>
         <div className={classes.tasks}>
-          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+          <TaskList tasks={form.tasks.value} editable showModal={showModal} updateTasks={updateTasks} />
         </div>
-        <Button className={classes.cta} color="secondary" variant="contained" type="submit">
+        <Button id="fab" className={classes.cta} color="secondary" variant="contained" type="submit">
           Create
         </Button>
       </form>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TextField, Chip, FormControl, FormGroup, makeStyles, Button } from "@material-ui/core";
+import { TextField, Chip, FormControl, FormGroup, makeStyles, Button, Typography } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { fetchBodyPartsRequest } from "Store/content/thunks";
 import { connect } from "react-redux";
@@ -8,6 +8,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { capitalizeWord } from "../../../utils/text-utils";
 import { Exercise } from "Store/types";
 import { createExercise } from "Services/exercise";
+import { onInputFocusHideFab, onInputBlurShowFab, fabKeyboardStyles } from "Utils/ui-utils";
 
 interface RouteParams {
   id: string;
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "nowrap",
   },
   fab: {
-    position: "absolute",
+    position: "fixed",
     bottom: theme.spacing(2),
     left: "50%",
     transform: "translateX(-50%)",
@@ -76,6 +77,7 @@ const formToExercise = (form: FormState): Exercise => ({
 const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnProps) => {
   const bodyPartsInputRef = React.createRef<HTMLInputElement>();
   const classes = useStyles();
+  const fabClass = fabKeyboardStyles();
 
   const [form, setForm] = React.useState<FormState>({
     title: { value: "", errorMessage: "" },
@@ -140,17 +142,21 @@ const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnPr
 
   return (
     <div>
-      <h2>Create exercise</h2>
       <form onSubmit={handleSubmit}>
+        <Typography variant="h4">Create exercise</Typography>
         <FormControl className={classes.formControl} fullWidth>
           <TextField
             id="title"
-            name="title"
+            name="new-exercise-title"
             label="Title"
             color="secondary"
             value={form.title.value}
             error={!!form.title.errorMessage}
             helperText={form.title.errorMessage}
+            InputProps={{
+              onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+              onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+            }}
             onChange={onTextFieldChange}
             required
           />
@@ -165,6 +171,10 @@ const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnPr
             rowsMax={5}
             error={!!form.description.errorMessage}
             helperText={form.description.errorMessage}
+            InputProps={{
+              onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+              onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+            }}
             onChange={onTextFieldChange}
             multiline
           />
@@ -178,6 +188,10 @@ const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnPr
             value={form.defaultReps.value}
             error={!!form.defaultReps.errorMessage}
             helperText={form.defaultReps.errorMessage}
+            InputProps={{
+              onFocus: () => onInputFocusHideFab(fabClass.keyboardStyle),
+              onBlur: () => onInputBlurShowFab(fabClass.keyboardStyle),
+            }}
             onChange={onTextFieldChange}
             required
           />
@@ -212,9 +226,11 @@ const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnPr
             ChipProps={{ color: "secondary" }}
             value={form.bodyParts.value}
             onChange={onBodyPartsChange}
+            onOpen={() => onInputFocusHideFab(fabClass.keyboardStyle)}
+            onClose={() => onInputBlurShowFab(fabClass.keyboardStyle)}
           />
         </FormControl>
-        <Button className={classes.fab} color="secondary" variant="contained" type="submit">
+        <Button id="fab" className={classes.fab} color="secondary" variant="contained" type="submit">
           Save
         </Button>
       </form>
