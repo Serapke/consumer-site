@@ -4,7 +4,7 @@ import { RouteComponentProps, Link } from "react-router-dom";
 import { ApplicationState } from "Store/index";
 import { getWorkout } from "Services/workout";
 import { Workout } from "Store/types";
-import { Typography, Button, Box, makeStyles, Theme, createStyles } from "@material-ui/core";
+import { Typography, Button, Box, makeStyles, Theme, createStyles, Chip } from "@material-ui/core";
 import TaskList from "Components/task-list";
 
 interface RouteParams {
@@ -16,6 +16,9 @@ type AllProps = RouteComponentProps<RouteParams>;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     header: {
+      marginBottom: theme.spacing(2),
+    },
+    restBox: {
       marginBottom: theme.spacing(2),
     },
   })
@@ -40,6 +43,11 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ match }) => {
             EDIT WORKOUT
           </Button>
         </Box>
+      </Box>
+      <Box className={classes.restBox}>
+        <Typography variant="subtitle1" gutterBottom>
+          Rest between exercises: <Chip label={`${workout.restPeriodInSeconds} seconds`}></Chip>
+        </Typography>
       </Box>
       <Box>
         <TaskList tasks={workout.tasks} />
