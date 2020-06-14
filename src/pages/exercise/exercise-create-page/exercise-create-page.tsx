@@ -167,7 +167,6 @@ const ExerciseCreatePage = ({ bodyParts, match, history, fetchBodyParts }: OwnPr
             helperText={form.description.errorMessage}
             onChange={onTextFieldChange}
             multiline
-            required
           />
         </FormControl>
         <div className={`${classes.formControl} ${classes.unitSelection}`}>
