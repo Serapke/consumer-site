@@ -1,9 +1,8 @@
 import * as React from "react";
 import { ListItem, ListItemText, ListItemAvatar, Avatar, makeStyles, Theme, createStyles } from "@material-ui/core";
-import { Check, Add, Folder } from "@material-ui/icons";
+import { Check, Add, Folder, FitnessCenter } from "@material-ui/icons";
 import { Exercise } from "Store/types";
 import { capitalizeWord } from "../../utils/text-utils";
-import squatIcon from "../../images/squat.png";
 
 interface OwnProps {
   exercise: Exercise;
@@ -44,7 +43,7 @@ const ExerciseItem = ({ exercise, selected, onClick }: OwnProps) => {
     <ListItem button onClick={() => onClick(exercise.id)}>
       <ListItemAvatar>
         <Avatar className={classes.black}>
-          <img src={squatIcon} />
+          <FitnessCenter />
         </Avatar>
       </ListItemAvatar>
       <div className={classes.listItemText}>
