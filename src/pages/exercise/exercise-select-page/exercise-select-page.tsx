@@ -137,11 +137,11 @@ const ExerciseSelectPage = ({
         </Button>
       </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="search" className={classes.label} color="secondary">
+        <InputLabel htmlFor="exercise" className={classes.label} color="secondary">
           Search
         </InputLabel>
         <Input
-          id="search"
+          id="exercise"
           value={searchQuery}
           color="secondary"
           onChange={(e) => setSearchQuery(e.target.value)}
