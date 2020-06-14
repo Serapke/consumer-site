@@ -110,7 +110,7 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
         console.log(res.errors);
       } else {
         clearForm();
-        history.push("/favorites");
+        history.push(`/workout/${match.params.id}`);
       }
     });
   };
