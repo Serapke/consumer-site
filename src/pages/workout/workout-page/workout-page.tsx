@@ -4,7 +4,8 @@ import { RouteComponentProps, Link } from "react-router-dom";
 import { ApplicationState } from "Store/index";
 import { getWorkout } from "Services/workout";
 import { Workout } from "Store/types";
-import { Typography, Button, Box } from "@material-ui/core";
+import { Typography, Button, Box, makeStyles, Theme, createStyles } from "@material-ui/core";
+import TaskList from "Components/task-list";
 
 interface RouteParams {
   id: string;
@@ -12,7 +13,16 @@ interface RouteParams {
 
 type AllProps = RouteComponentProps<RouteParams>;
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    header: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
+
 const WorkoutPage: React.FunctionComponent<AllProps> = ({ match }) => {
+  const classes = useStyles();
   const [workout, updateWorkout] = React.useState<Workout>();
 
   React.useEffect(() => {
@@ -23,13 +33,16 @@ const WorkoutPage: React.FunctionComponent<AllProps> = ({ match }) => {
 
   return (
     <div>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Box className={classes.header} display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h4">{workout.title}</Typography>
         <Box>
           <Button color="secondary" component={Link} to={`/workout/${match.params.id}/edit`}>
             EDIT WORKOUT
           </Button>
         </Box>
+      </Box>
+      <Box>
+        <TaskList tasks={workout.tasks} />
       </Box>
     </div>
   );

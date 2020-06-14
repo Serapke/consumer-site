@@ -11,11 +11,12 @@ import { updateTasksRequest } from "Store/form/thunks";
 
 interface OwnProps {
   tasks: Task[];
-  showModal: typeof showModalRequest;
-  updateTasks: typeof updateTasksRequest;
+  editable?: boolean;
+  showModal?: typeof showModalRequest;
+  updateTasks?: typeof updateTasksRequest;
 }
 
-const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
+const TaskList = ({ tasks, editable, showModal, updateTasks }: OwnProps) => {
   const [activeTask, setActiveTask] = React.useState<number | false>(false);
 
   if (!tasks || !tasks.length) {
@@ -30,22 +31,23 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
     setActiveTask(isExpanded ? taskID : false);
   };
 
-  const onSetClick = (index: number) => {
+  const onSetClick = (taskIndex: number, setIndex: number) => {
+    if (!editable) return;
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
-        task: tasks.find((t) => t.id === activeTask),
+        task: tasks[taskIndex],
         action: ActionType.UPDATE,
-        index,
+        index: setIndex,
       },
     });
   };
 
-  const onAddSetClick = () => {
+  const onAddSetClick = (index: number) => {
     showModal({
       type: ModalType.SetEditingDialog,
       props: {
-        task: tasks.find((t) => t.id === activeTask),
+        task: tasks[index],
         action: ActionType.ADD,
       },
     });
@@ -66,14 +68,14 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
     updateTasks(reorderedTasks);
   };
 
-  const onDelete = (index: number) => {
+  const onDeleteClick = (index: number) => {
     const updatedTasks = removeItem(tasks, { index });
     updateTasks(updatedTasks);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="list">
+      <Droppable droppableId="list" isDropDisabled={!editable}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             {tasks.map((task, index) => (
@@ -82,10 +84,11 @@ const TaskList = ({ tasks, showModal, updateTasks }: OwnProps) => {
                 task={task}
                 key={task.id + "_" + index}
                 expanded={activeTask === task.id}
+                editable={editable}
                 onChange={onTaskClick(task.id)}
                 onSetClick={onSetClick}
                 onAddSetClick={onAddSetClick}
-                onDelete={onDelete}
+                onDeleteClick={onDeleteClick}
               />
             ))}
             {provided.placeholder}

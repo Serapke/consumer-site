@@ -1,23 +1,34 @@
 import * as React from "react";
-import { Chip, Typography, ExpansionPanelDetails, withStyles, IconButton } from "@material-ui/core";
+import {
+  Chip,
+  Typography,
+  ExpansionPanelDetails,
+  withStyles,
+  Box,
+  Avatar,
+  makeStyles,
+  Theme,
+  createStyles,
+} from "@material-ui/core";
 import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import { Task } from "Store/types";
-import * as Styles from "./task-item.scss";
 import CircleItem from "Components/circle-item";
 import AddIcon from "@material-ui/icons/Add";
 import { Draggable } from "react-beautiful-dnd";
 import { capitalizeWord } from "../../utils/text-utils";
-import { Delete } from "@material-ui/icons";
+import { FitnessCenter } from "@material-ui/icons";
+import TaskItemMenu from "./task-item-menu";
 
 interface OwnProps {
   index: number;
   task: Task;
   expanded: boolean;
+  editable?: boolean;
   onChange: (event: React.ChangeEvent<{}>, isExpanded: boolean) => void;
-  onSetClick: (index: number) => void;
-  onAddSetClick: () => void;
-  onDelete: (index: number) => void;
+  onSetClick: (taskIndex: number, setIndex: number) => void;
+  onAddSetClick: (index: number) => void;
+  onDeleteClick: (index: number) => void;
 }
 
 const ExpansionPanel = withStyles({
@@ -56,10 +67,49 @@ const ExpansionPanelSummary = withStyles({
   expanded: {},
 })(MuiExpansionPanelSummary);
 
-const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetClick, onAddSetClick, onDelete }) => {
-  const onDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    onDelete(index);
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    avatar: {
+      marginRight: theme.spacing(2),
+    },
+    setBox: {
+      "&>*": {
+        margin: "4px",
+      },
+    },
+    bodyTagBox: {
+      "&>*": {
+        margin: "4px",
+      },
+    },
+  })
+);
+
+const TaskItem: React.FC<OwnProps> = ({
+  index,
+  task,
+  expanded,
+  editable,
+  onChange,
+  onSetClick,
+  onAddSetClick,
+  onDeleteClick,
+}) => {
+  const classes = useStyles();
+
+  const onSet = (event: React.MouseEvent<HTMLDivElement>, setIndex: number) => {
+    event.stopPropagation();
+    onSetClick(index, setIndex);
+  };
+
+  const onAdd = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onAddSetClick(index);
+  };
+
+  const onDelete = (event: React.MouseEvent<HTMLLIElement>) => {
+    event.stopPropagation();
+    onDeleteClick(index);
   };
 
   return (
@@ -73,33 +123,41 @@ const TaskItem: React.FC<OwnProps> = ({ index, task, expanded, onChange, onSetCl
           {...provided.dragHandleProps}
         >
           <ExpansionPanelSummary>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <Typography component="div">{task.exercise.title}</Typography>
-                <div className={Styles.chipContainer}>
-                  {task.exercise.bodyParts.map((bodyPart) => (
-                    <Chip key={bodyPart} size="small" label={capitalizeWord(bodyPart)} />
-                  ))}
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Box display="flex" alignItems="center">
+                <Avatar className={classes.avatar}>
+                  <FitnessCenter />
+                </Avatar>
+                <div>
+                  <Typography component="div">{task.exercise.title}</Typography>
+                  <Box display="flex" flexWrap="wrap" className={classes.setBox}>
+                    {task.sets.map((set, sIndex) => (
+                      <CircleItem key={sIndex} style="secondary" outlined onClick={(e) => onSet(e, sIndex)}>
+                        {set}x
+                      </CircleItem>
+                    ))}
+                    {editable && (
+                      <CircleItem style="secondary" onClick={onAdd}>
+                        <AddIcon />
+                      </CircleItem>
+                    )}
+                  </Box>
                 </div>
-              </div>
-              <div>
-                <IconButton aria-label="delete" onClick={onDeleteClick}>
-                  <Delete />
-                </IconButton>
-              </div>
-            </div>
+              </Box>
+              {editable && <TaskItemMenu onDelete={onDelete} />}
+            </Box>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <div className={Styles.setContainer}>
-              {task.sets.map((set, index) => (
-                <CircleItem key={index} style="primary" onClick={() => onSetClick(index)}>
-                  {set}x
-                </CircleItem>
-              ))}
-              <CircleItem style="secondary" onClick={onAddSetClick}>
-                <AddIcon />
-              </CircleItem>
-            </div>
+            <Box>
+              <Typography variant="body1" gutterBottom>
+                {task.exercise.description}
+              </Typography>
+              <Box className={classes.bodyTagBox}>
+                {task.exercise.bodyParts.map((bodyPart) => (
+                  <Chip key={bodyPart} size="small" label={capitalizeWord(bodyPart)} />
+                ))}
+              </Box>
+            </Box>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       )}

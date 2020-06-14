@@ -144,7 +144,7 @@ const WorkoutEditPage: React.FunctionComponent<AllProps> = ({
           <Add fontSize="large" />
         </Button>
         <div className={classes.tasks}>
-          <TaskList tasks={form.tasks.value} showModal={showModal} updateTasks={updateTasks} />
+          <TaskList tasks={form.tasks.value} editable showModal={showModal} updateTasks={updateTasks} />
         </div>
         <Button className={classes.cta} color="secondary" variant="contained" type="submit">
           Save
